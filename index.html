@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REQUIEM - Mã Hóa & Nhúng Đa Phương Tiện</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* === ROOT VARIABLES === */
+        :root {
+            --bg-color: #1a1a1c;
+            --text-color: #d8d8d8;
+            --accent-color: #a0a0a0;
+            --border-color: rgba(216, 216, 216, 0.2);
+            --arch-bg: rgba(255, 255, 255, 0.03);
+            --font-display: 'Cinzel', serif;
+            --font-mono: 'Space Mono', monospace;
+            --transition: all 0.3s ease;
+            --error: #ff5555;
+            --success: #55ff55;
+            --texture: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
+            --grid-pattern: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        }
+
+        /* === BASE STYLES === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: var(--font-mono); 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+            line-height: 1.6; 
+            position: relative; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            padding: 3rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* === BACKGROUND EFFECTS === */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: var(--texture);
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: var(--grid-pattern);
+            background-size: 15px 15px;
+            z-index: -1;
+            pointer-events: none;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+        }
+
+        /* === HEADER === */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            text-transform: uppercase;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .header-decor {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+        }
+
+        h1 { 
+            font-family: var(--font-display);
+            text-align: center; 
+            color: #fff; 
+            font-weight: 400; 
+            letter-spacing: 15px; 
+            text-transform: uppercase; 
+            font-size: 4rem; 
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 10;
+            mix-blend-mode: overlay;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; letter-spacing: 8px; }
+        }
+
+        /* === MAIN CONTAINER (Generator) === */
+        .container { 
+            max-width: 800px; 
+            width: 100%;
+            margin: 0 auto; 
+            padding: 3rem; 
+            background: rgba(26, 26, 28, 0.7); 
+            backdrop-filter: blur(5px); 
+            border: 1px solid var(--border-color); 
+            position: relative; 
+            z-index: 5;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        /* Arched design elements echoing the image */
+        .arch-container {
+            position: absolute;
+            top: -10%; left: 50%;
+            transform: translateX(-50%);
+            width: 120%;
+            height: 120%;
+            display: flex;
+            justify-content: center;
+            gap: 2%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .arch {
+            flex: 1;
+            background: linear-gradient(to bottom, var(--arch-bg), transparent);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-bottom: none;
+            border-top-left-radius: 50vw;
+            border-top-right-radius: 50vw;
+            height: 100%;
+            max-width: 30%;
+        }
+
+        .arch:nth-child(2) {
+            transform: translateY(-5%);
+            max-width: 35%;
+        }
+
+        /* === GENERATOR FORM === */
+        .generator-form { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 2rem; 
+        }
+
+        .input-group { position: relative; }
+        .input-group label { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            margin-bottom: 0.8rem; 
+            color: var(--accent-color); 
+            font-size: 0.75rem; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+        } 
+        
+        .input-group label .material-icons { font-size: 1rem; }
+
+        textarea#markdown-input, 
+        input[type="text"]#output-password-input, 
+        input[type="url"], 
+        select#image-layout-select, 
+        input[type="number"] {
+            width: 100%; 
+            padding: 1rem; 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-color); 
+            font-family: var(--font-mono);
+            font-size: 0.85rem; 
+            transition: var(--transition); 
+            outline: none; 
+            letter-spacing: 1px; 
+        }
+        
+        textarea#markdown-input { 
+            min-height: 150px; 
+            resize: vertical; 
+            line-height: 1.6; 
+        }
+
+        textarea#markdown-input:focus, 
+        input[type="text"]#output-password-input:focus, 
+        input[type="url"]:focus, 
+        select#image-layout-select:focus, 
+        input[type="number"]:focus { 
+            border-color: #fff; 
+            background: rgba(0,0,0,0.5);
+        }
+
+        select#image-layout-select { 
+            appearance: none; 
+            -webkit-appearance: none; 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d8d8d8' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E"); 
+            background-repeat: no-repeat; 
+            background-position: right 1rem center; 
+            background-size: 1em; 
+            cursor: pointer; 
+        }
+        
+        select#image-layout-select option { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+        }
+
+        input[type="number"] { text-align: center; }
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .error { border-color: var(--error) !important; }
+
+        small.input-note { 
+            color: #777; 
+            display: block; 
+            margin-top: 0.8rem; 
+            font-size: 0.7rem; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* === Layout Mode Selection === */
+        .layout-mode-selector { 
+            display: flex; 
+            gap: 2rem; 
+            align-items: center; 
+            padding: 1rem 0;
+        }
+        .layout-mode-selector label { 
+            margin-bottom: 0; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            color: var(--text-color);
+        }
+        .layout-mode-selector input[type="radio"] { 
+            appearance: none; 
+            width: 12px; 
+            height: 12px; 
+            border: 1px solid var(--text-color); 
+            border-radius: 50%; 
+            cursor: pointer; 
+            display: grid; 
+            place-content: center;
+        }
+        .layout-mode-selector input[type="radio"]::before { 
+            content: ''; 
+            width: 6px; 
+            height: 6px; 
+            border-radius: 50%; 
+            background-color: #fff; 
+            transform: scale(0); 
+            transition: 120ms transform ease-in-out; 
+        }
+        .layout-mode-selector input[type="radio"]:checked::before { transform: scale(1); }
+        .layout-mode-selector input[type="radio"]:checked { border-color: #fff; }
+
+        /* === Dynamic Input List Styles === */
+        .input-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.5rem; 
+            margin-bottom: 1rem; 
+        }
+        .input-list-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        .input-list-item input[type="url"] { flex-grow: 1; }
+        .input-list-item button { 
+            padding: 1rem; 
+            background: transparent; 
+            border: 1px solid var(--border-color); 
+            color: var(--text-color);
+            cursor: pointer; 
+            transition: var(--transition); 
+        }
+        .input-list-item button:hover { 
+            border-color: var(--error);
+            color: var(--error);
+        }
+        
+        .add-button { 
+            background: transparent; 
+            color: var(--text-color); 
+            padding: 0.8rem; 
+            font-size: 0.75rem; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px dashed var(--border-color); 
+            cursor: pointer; 
+            transition: var(--transition); 
+            width: 100%;
+            font-family: var(--font-mono);
+        }
+        .add-button:hover { 
+            border-color: #fff; 
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* === Expiry Date Inputs === */
+        .expiry-inputs { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 0.5rem; 
+        }
+        .expiry-inputs label { font-size: 0.6rem; display: none; }
+
+        /* === BUTTON STYLES === */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        button.primary-btn { 
+            flex: 1;
+            background: #fff; 
+            color: #000; 
+            border: none; 
+            padding: 1.2rem; 
+            cursor: pointer; 
+            font-family: var(--font-mono);
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            transition: var(--transition); 
+        }
+        button.primary-btn:hover:not(:disabled) { 
+            background: #d8d8d8; 
+        }
+        
+        button.secondary-btn {
+            flex: 1;
+            background: transparent; 
+            color: #fff; 
+            border: 1px solid #fff; 
+            padding: 1.2rem; 
+            cursor: pointer; 
+            font-family: var(--font-mono);
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            transition: var(--transition); 
+        }
+        button.secondary-btn:disabled { 
+            opacity: 0.3; 
+            border-color: var(--border-color);
+            cursor: not-allowed; 
+        }
+        button.secondary-btn:not(:disabled):hover { 
+            background: rgba(255,255,255,0.1); 
+        }
+
+        button.copied { 
+            background: var(--success) !important; 
+            color: #000 !important;
+            border-color: var(--success) !important;
+        }
+
+        /* === STATUS & MODALS === */
+        .status-message { 
+            text-align: center; 
+            margin-top: 1rem; 
+            font-size: 0.75rem; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 1rem;
+            border: 1px solid transparent;
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.3s ease; 
+        } 
+        .status-message.show { opacity: 1; visibility: visible; } 
+        .status-message.error { color: var(--error); border-color: rgba(255,85,85,0.3); background: rgba(255,85,85,0.05); } 
+        .status-message.info { color: var(--text-color); border-color: var(--border-color); } 
+        .status-message.success { color: var(--success); border-color: rgba(85,255,85,0.3); background: rgba(85,255,85,0.05); }
+
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(5px); 
+            z-index: 1000; 
+            display: flex; justify-content: center; align-items: center; 
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease; 
+        }
+        .modal-overlay:not(.hidden) { opacity: 1; pointer-events: auto; }
+        .modal-overlay.hidden { display: none !important; }
+        
+        .modal-content { 
+            background: var(--bg-color); 
+            border: 1px solid var(--border-color); 
+            padding: 3rem; 
+            max-width: 500px; 
+            width: 90%; 
+            text-align: center;
+        }
+        
+        .modal-title { 
+            font-family: var(--font-display);
+            color: #fff; 
+            margin-bottom: 1.5rem; 
+            font-size: 1.5rem; 
+            letter-spacing: 5px; 
+        } 
+        
+        .modal-message { 
+            color: var(--accent-color); 
+            margin-bottom: 2rem; 
+            font-size: 0.85rem; 
+        }
+        
+        .modal-button { 
+            background: #fff;
+            color: #000;
+            border: none; 
+            padding: 1rem 2rem; 
+            cursor: pointer; 
+            font-family: var(--font-mono);
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            transition: var(--transition); 
+            width: 100%; 
+        }
+        .modal-button:hover { background: #d8d8d8; }
+
+        /* Decor elements mimicking the bottom bar in image */
+        .footer-decor {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.6rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .barcode {
+            font-family: 'Libre Barcode 39', cursive; /* Fallback if not loaded */
+            font-size: 2rem;
+            letter-spacing: 0;
+            background: repeating-linear-gradient(90deg, #fff, #fff 2px, transparent 2px, transparent 4px, #fff 4px, #fff 5px, transparent 5px, transparent 8px);
+            color: transparent;
+            width: 150px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) { 
+            .container { padding: 1.5rem; } 
+            .expiry-inputs { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .expiry-inputs .input-group:nth-child(4), .expiry-inputs .input-group:nth-child(5) { grid-column: span 1; }
+            .action-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+
+    <header>
+        <div>SYSTEM // ENCRYPT</div>
+        <div class="header-decor">✧</div>
+        <div>VER 2.2 // 2026</div>
+    </header>
+
+    <h1>Requiem</h1>
+
+    <div class="container" id="generator-container">
+        
+        <div class="arch-container">
+            <div class="arch"></div>
+            <div class="arch"></div>
+            <div class="arch"></div>
+        </div>
+
+        <form class="generator-form" id="main-form" onsubmit="return false;">
+            
+            <div class="input-group">
+                <label for="markdown-input">Primary Content Data</label>
+                <textarea id="markdown-input" placeholder="Enter markdown payload here..."></textarea>
+                <small class="input-note">Study Mode: Use **Question**, indented **Answer**, and * **Explanation*</small>
+            </div>
+             
+             <div class="input-group">
+                <label>Display Architecture</label>
+                <div class="layout-mode-selector">
+                    <label for="layout-normal">
+                        <input type="radio" id="layout-normal" name="page-layout" value="normal" checked> Standard
+                    </label>
+                    <label for="layout-study">
+                        <input type="radio" id="layout-study" name="page-layout" value="study"> Study Format
+                    </label>
+                </div>
+             </div>
+             
+            <div class="input-group">
+                <label for="output-password-input">Encryption Key (Req)</label>
+                <input type="text" id="output-password-input" placeholder="Min 8 characters" required minlength="8">
+            </div>
+
+            <div class="input-group">
+                 <label>Temporal Limit (Opt)</label>
+                 <div class="expiry-inputs">
+                     <div class="input-group">
+                         <input type="number" id="expiry-day" placeholder="DD" min="1" max="31">
+                     </div>
+                     <div class="input-group">
+                         <input type="number" id="expiry-month" placeholder="MM" min="1" max="12">
+                     </div>
+                     <div class="input-group">
+                         <input type="number" id="expiry-year" placeholder="YYYY" min="2024">
+                     </div>
+                     <div class="input-group">
+                         <input type="number" id="expiry-hour" placeholder="HH" min="0" max="23">
+                     </div>
+                     <div class="input-group">
+                         <input type="number" id="expiry-minute" placeholder="MM" min="0" max="59">
+                     </div>
+                 </div>
+            </div>
+
+            <div class="input-group">
+                 <label for="image-url-list">Visual Assets (URL)</label>
+                 <div class="input-list" id="image-url-list"></div>
+                 <button type="button" class="add-button" id="add-image-button">+ Add Asset</button>
+                 
+                 <div style="margin-top: 1rem;">
+                     <select id="image-layout-select">
+                         <option value="grid">Grid Array (3/row)</option>
+                         <option value="column">Column Stack (1/row)</option>
+                         <option value="comic">Seamless Stream</option>
+                     </select>
+                 </div>
+            </div>
+
+             <div class="input-group">
+                 <label for="iframe-url-list">External Media (Iframe)</label>
+                 <div class="input-list" id="iframe-url-list"></div>
+                 <button type="button" class="add-button" id="add-iframe-button">+ Add Media</button>
+             </div>
+
+            <div class="action-buttons">
+                <button type="button" id="generate-button" class="primary-btn">Initialize Protocol</button>
+                <button type="button" id="copy-button" class="secondary-btn" disabled>Extract Source</button>
+            </div>
+            
+            <div class="status-message" id="status-message"></div>
+        </form>
+    </div>
+
+    <div class="footer-decor">
+        <div class="barcode"></div>
+        <div>[ STATUS: STANDBY ]</div>
+        <div>FFX // INTERNAL</div>
+    </div>
+
+    <div class="modal-overlay hidden" id="warning-modal"></div>
+
+    <script>
+        // ====== CONFIGURATION & ELEMENTS ======
+        const markdownInput = document.getElementById('markdown-input');
+        const outputPasswordInput = document.getElementById('output-password-input');
+        const layoutNormalRadio = document.getElementById('layout-normal');
+        const layoutStudyRadio = document.getElementById('layout-study');
+        const expiryDayInput = document.getElementById('expiry-day');
+        const expiryMonthInput = document.getElementById('expiry-month');
+        const expiryYearInput = document.getElementById('expiry-year');
+        const expiryHourInput = document.getElementById('expiry-hour');
+        const expiryMinuteInput = document.getElementById('expiry-minute');
+        const expiryInputs = [expiryDayInput, expiryMonthInput, expiryYearInput, expiryHourInput, expiryMinuteInput];
+        const imageUrlList = document.getElementById('image-url-list');
+        const iframeUrlList = document.getElementById('iframe-url-list');
+        const addImageButton = document.getElementById('add-image-button');
+        const addIframeButton = document.getElementById('add-iframe-button');
+        const imageLayoutSelect = document.getElementById('image-layout-select');
+        const generateButton = document.getElementById('generate-button');
+        const copyButton = document.getElementById('copy-button');
+        const statusMessage = document.getElementById('status-message');
+        const warningModal = document.getElementById('warning-modal');
+        let fullHtmlToCopy = '';
+        let statusTimeout = null;
+
+        // ====== UTILITY FUNCTIONS ======
+        function showStatus(message, type = "info", icon = "", duration = 5000) { 
+            clearTimeout(statusTimeout); 
+            statusMessage.innerHTML = message; 
+            statusMessage.className = 'status-message'; 
+            requestAnimationFrame(() => { 
+                statusMessage.classList.add(type); 
+                statusMessage.classList.add('show'); 
+            }); 
+            if (duration > 0) { 
+                statusTimeout = setTimeout(() => { 
+                    statusMessage.classList.remove('show'); 
+                }, duration); 
+            } 
+        }
+        function isValidUrl(string) { 
+            if (!string) return false; 
+            try { new URL(string); return string.startsWith('http:') || string.startsWith('https:') || string.startsWith('data:'); } 
+            catch (_) { return false; } 
+        }
+
+        // ====== Dynamic Input List Logic ======
+        function addListItem(listContainer, placeholderText = "Paste URL...") {
+             const listItem = document.createElement('div');
+             listItem.className = 'input-list-item';
+             const input = document.createElement('input');
+             input.type = 'url'; input.placeholder = placeholderText; 
+             input.addEventListener('input', () => input.classList.remove('error'));
+             const removeButton = document.createElement('button'); 
+             removeButton.type = 'button'; 
+             removeButton.innerHTML = '×'; 
+             removeButton.title = 'Remove';
+             removeButton.onclick = () => listItem.remove();
+             listItem.appendChild(input); 
+             listItem.appendChild(removeButton); 
+             listContainer.appendChild(listItem); 
+             input.focus(); 
+        }
+        
+        addImageButton.addEventListener('click', () => addListItem(imageUrlList, "Asset URL..."));
+        addIframeButton.addEventListener('click', () => addListItem(iframeUrlList, "Media URL..."));
+
+        // ====== SECURITY FUNCTIONS ======
+        function multiLayerEncrypt(content, password, layers = 10) {
+            if (typeof CryptoJS === 'undefined') throw new Error("CryptoJS missing.");
+            let currentContent = content;
+            for (let i = 0; i < layers; i++) {
+                const combined = `${currentContent}|${password}|${i}`; 
+                const layerKey = password + i;
+                try { currentContent = CryptoJS.AES.encrypt(combined, layerKey).toString(); }
+                catch (e) { throw new Error(`Encryption error layer ${i + 1}`); }
+            } return currentContent;
+        }
+
+        // ====== HTML TEMPLATE GENERATION ======
+        function generateTargetHtmlTemplate(markdownContentHtml, pagePassword, pageLayoutMode, imageLayout, imageUrls, iframeUrls, expiryDetails) {
+            let encryptedMarkdownHtml;
+            try {
+                const contentToEncrypt = markdownContentHtml || "";
+                encryptedMarkdownHtml = multiLayerEncrypt(contentToEncrypt, pagePassword, 10);
+            } catch (e) { throw new Error(`Encryption failed: ${e.message}`); }
+
+            const escapedEncryptedData = encryptedMarkdownHtml.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const escapedPageLayoutMode = pageLayoutMode.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const escapedImageLayout = imageLayout.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const imageUrlsJs = JSON.stringify(imageUrls);
+            const iframeUrlsJs = JSON.stringify(iframeUrls);
+            const expiryDetailsJs = expiryDetails ? JSON.stringify(expiryDetails) : 'null';
+
+            const expiredMessage = `[ ERROR: TEMPORAL LIMIT REACHED. ACCESS DENIED. ]`;
+
+            return `
+<!DOCTYPE html>
+<html lang="vi">
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>REQUIEM // ENCRYPTED DATA</title> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* === REQUIEM EXTRACTED THEME === */
+:root {
+    --bg-color: #121214; 
+    --text-color: #d0d0d0; 
+    --accent-color: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.15);
+    --font-display: 'Cinzel', serif; 
+    --font-mono: 'Space Mono', monospace;
+    --error: #ff4444;
+    --texture: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.06"/></svg>');
+    --grid-pattern: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: var(--font-mono); background-color: var(--bg-color); color: var(--text-color);
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    font-size: 0.9rem; line-height: 1.8; position: relative; overflow-x: hidden;
+}
+body::before { 
+    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background-image: var(--texture); pointer-events: none; z-index: -2; 
+}
+.grid-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background-image: var(--grid-pattern); background-size: 20px 20px; z-index: -1; 
+    pointer-events: none; mask-image: radial-gradient(circle at center, black 30%, transparent 90%); 
+    -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 90%); 
+}
+
+/* Container & Header */
+.container {
+    max-width: 1000px; width: 100%; margin: 2rem auto; padding: 3rem 2rem;
+    position: relative; z-index: 10;
+}
+.top-decor {
+    text-align: center; font-size: 0.6rem; letter-spacing: 4px; opacity: 0.5; margin-bottom: 3rem;
+    display: flex; justify-content: space-between; text-transform: uppercase;
+}
+
+/* Password Section (The Gate) */
+#final-password-section { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;
+}
+.gate-arch {
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-radius: 50vw 50vw 0 0;
+    padding: 4rem 3rem 2rem 3rem;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
+    text-align: center;
+    position: relative;
+    max-width: 500px; width: 100%;
+}
+.gate-arch::after {
+    content: ''; position: absolute; bottom: 0; left: -10%; width: 120%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+}
+h1.page-title { 
+    font-family: var(--font-display); color: #fff; font-weight: 400; 
+    letter-spacing: 12px; text-transform: uppercase; font-size: 2.5rem; margin-bottom: 2rem; 
+    text-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+.password-form { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; }
+input[type=password] { 
+    width: 100%; padding: 1rem; background: transparent; 
+    border: 1px solid var(--border-color); border-top: none; border-right: none; border-left: none;
+    color: #fff; font-family: var(--font-mono); text-align: center; letter-spacing: 5px; outline: none;
+    transition: border-color 0.3s;
+}
+input[type=password]:focus { border-color: #fff; }
+button.submit-btn { 
+    background: transparent; color: #fff; border: 1px solid var(--border-color); 
+    padding: 1.2rem; cursor: pointer; font-family: var(--font-mono); font-weight: normal; 
+    text-transform: uppercase; letter-spacing: 3px; transition: all 0.3s; margin-top: 1rem;
+}
+button.submit-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; letter-spacing: 5px; }
+.error-msg { color: var(--error); font-size: 0.75rem; letter-spacing: 1px; display: none; margin-top: 0.5rem; }
+.error-msg.show { display: block; animation: shake 0.4s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+
+/* Content Section */
+#final-content-section { display: none; }
+#final-content-section.visible { display: block; animation: reveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+@keyframes reveal { from { opacity: 0; transform: translateY(20px); filter: blur(10px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+
+/* The Arched Image Layout (Requiem Poster Style) */
+#embedded-images-container { display: flex; gap: 1rem; margin-bottom: 3rem; justify-content: center; }
+#embedded-images-container.layout-grid { flex-direction: row; align-items: flex-end; height: 500px; }
+#embedded-images-container.layout-grid .img-item { 
+    flex: 1; height: 100%; position: relative; overflow: hidden;
+    border: 1px solid var(--border-color); border-bottom: none;
+    border-radius: 50vw 50vw 0 0; /* Creates the perfect arch */
+    background: rgba(255,255,255,0.02);
+    transition: filter 0.5s, transform 0.5s;
+}
+#embedded-images-container.layout-grid .img-item:nth-child(2) { height: 110%; transform: translateY(-5%); }
+#embedded-images-container.layout-grid .img-item img {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(30%) contrast(1.1);
+}
+#embedded-images-container.layout-grid .img-item:hover img { filter: grayscale(0%) contrast(1.2); transform: scale(1.05); transition: all 0.5s; }
+
+#embedded-images-container.layout-column { flex-direction: column; align-items: center; height: auto; }
+#embedded-images-container.layout-column .img-item { width: 100%; max-width: 700px; border: 1px solid var(--border-color); padding: 0.5rem; }
+#embedded-images-container.layout-column img { width: 100%; display: block; filter: grayscale(20%); }
+
+#embedded-images-container.layout-comic { flex-direction: column; gap: 0; }
+#embedded-images-container.layout-comic .img-item img { width: 100%; display: block; border: none; }
+
+/* Typography & Markdown */
+.markdown-body { 
+    max-width: 800px; margin: 0 auto; color: var(--text-color); 
+    font-family: 'Segoe UI', system-ui, sans-serif; /* Cleaner reading font */
+    font-size: 1.05rem; text-align: justify;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3 { 
+    font-family: var(--font-display); color: #fff; margin-top: 3rem; margin-bottom: 1.5rem; 
+    font-weight: normal; letter-spacing: 4px; text-align: center;
+}
+.markdown-body h1 { font-size: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+.markdown-body h2 { font-size: 1.8rem; }
+.markdown-body p, .markdown-body ul, .markdown-body ol { margin-bottom: 1.5rem; line-height: 1.9; }
+.markdown-body a { color: #fff; text-decoration: none; border-bottom: 1px solid var(--border-color); transition: border-color 0.3s; }
+.markdown-body a:hover { border-color: #fff; }
+.markdown-body blockquote { 
+    border-left: 1px solid #fff; padding-left: 2rem; font-style: italic; 
+    margin: 2rem 0; opacity: 0.8; font-family: var(--font-display); font-size: 1.2rem;
+}
+.markdown-body pre { 
+    background: rgba(0,0,0,0.4); padding: 1.5rem; border: 1px solid var(--border-color); 
+    overflow-x: auto; margin-bottom: 2rem; font-family: var(--font-mono); font-size: 0.85rem;
+}
+.markdown-body code { font-family: var(--font-mono); background: rgba(255,255,255,0.05); padding: 0.2em 0.4em; }
+
+/* Study Mode (Classified File Aesthetic) */
+.markdown-body.study-mode .study-question { 
+    border: 1px solid var(--border-color); border-left: 3px solid #fff; 
+    padding: 1.5rem; margin-bottom: 1.5rem; background: rgba(0,0,0,0.3); font-family: var(--font-mono);
+}
+.markdown-body.study-mode .study-answer { 
+    padding: 1rem 1rem 1rem 3rem; margin-bottom: 0.5rem; cursor: pointer; color: #fff; 
+    position: relative; transition: background 0.3s;
+}
+.markdown-body.study-mode .study-answer:hover { background: rgba(255,255,255,0.03); }
+.markdown-body.study-mode .study-answer::before { 
+    content: '[ ? ]'; position: absolute; left: 1rem; color: var(--border-color); font-size: 0.8rem;
+}
+.markdown-body.study-mode .study-explanation { 
+    display: none; padding: 1rem 1rem 1rem 3rem; color: rgba(255,255,255,0.6); 
+    border-left: 1px dashed var(--border-color); margin-left: 1.5rem; margin-bottom: 1.5rem;
+}
+.markdown-body.study-mode .study-explanation.visible { display: block; animation: fadeIn 0.5s ease; }
+
+/* Media */
+#embedded-iframes-container { display: flex; flex-direction: column; gap: 3rem; margin-top: 4rem; }
+.iframe-wrapper { position: relative; width: 100%; padding-top: 56.25%; border: 1px solid var(--border-color); background: #000; }
+.iframe-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; filter: grayscale(20%); transition: filter 0.3s; }
+.iframe-wrapper iframe:hover { filter: grayscale(0%); }
+
+/* Footer */
+.footer-decor {
+    margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color);
+    display: flex; justify-content: space-between; align-items: flex-end;
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5;
+}
+.barcode {
+    font-family: 'Libre Barcode 39', cursive, monospace; font-size: 2rem; letter-spacing: 0;
+    background: repeating-linear-gradient(90deg, #fff, #fff 1px, transparent 1px, transparent 3px, #fff 3px, #fff 4px, transparent 4px, transparent 6px);
+    color: transparent; width: 120px; height: 25px; opacity: 0.8;
+}
+
+#expiration-message { display: none; text-align: center; color: var(--error); font-size: 0.9rem; letter-spacing: 4px; border: 1px solid var(--error); padding: 1rem; margin: 2rem; background: rgba(255,0,0,0.05); }
+body.expired .container { display: none; }
+body.expired #expiration-message { display: block; }
+
+@media (max-width: 768px) {
+    #embedded-images-container.layout-grid { height: auto; flex-direction: column; }
+    #embedded-images-container.layout-grid .img-item { border-radius: 0; border: 1px solid var(--border-color); padding: 0.5rem; height: auto;}
+    #embedded-images-container.layout-grid .img-item img { position: relative; height: auto; filter: grayscale(0%);}
+    #embedded-images-container.layout-grid .img-item:nth-child(2) { transform: none; }
+    h1.page-title { font-size: 1.8rem; letter-spacing: 6px; }
+    .gate-arch { padding: 2rem 1.5rem; border-radius: 0; border-top: 1px solid var(--border-color); }
+    .footer-decor { flex-direction: column; gap: 1rem; align-items: center; text-align: center; }
+}
+</style>
+</head>
+<body id="target-body">
+    <div class="grid-overlay"></div>
+    <div id="expiration-message">${expiredMessage}</div>
+    
+    <div class="container">
+        <div id="final-password-section">
+            <div class="top-decor">
+                <span>// CLASSIFIED</span>
+                <span>JAN 2026</span>
+            </div>
+            
+            <div class="gate-arch">
+                <h1 class="page-title">Requiem</h1>
+                <form class="password-form" id="password-form" onsubmit="checkPass(event); return false;">
+                    <input type="password" id="pass-input" placeholder="[ ENTER KEY ]" required>
+                    <button type="submit" class="submit-btn" id="submit-btn">Authorize</button>
+                    <div class="error-msg" id="error-msg">ACCESS DENIED: INVALID SIGNATURE</div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="final-content-section">
+            <div class="top-decor">
+                <span>// PAYLOAD EXTRACTED</span>
+                <span>FFX INTERNAL</span>
+            </div>
+
+            <div id="embedded-images-container"></div>
+            <div class="markdown-body" id="markdown-content"></div>
+            <div id="embedded-iframes-container"></div>
+
+            <div class="footer-decor">
+                <div>
+                    <div class="barcode"></div>
+                    <div style="margin-top: 0.5rem;">SEQ: 000000 ↗</div>
+                </div>
+                <div>DESIGN BY<br>FARFALLA / MINH TRANG</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const encryptedData = \`${escapedEncryptedData}\`;
+        const layoutMode = \`${escapedPageLayoutMode}\`;
+        const imgLayout = \`${escapedImageLayout}\`;
+        const imgUrls = ${imageUrlsJs};
+        const frameUrls = ${iframeUrlsJs};
+        const expiry = ${expiryDetailsJs};
+
+        const body = document.getElementById('target-body');
+        const passSec = document.getElementById('final-password-section');
+        const contSec = document.getElementById('final-content-section');
+        const passInp = document.getElementById('pass-input');
+        const err = document.getElementById('error-msg');
+        const mdCont = document.getElementById('markdown-content');
+        const imgCont = document.getElementById('embedded-images-container');
+        const frameCont = document.getElementById('embedded-iframes-container');
+
+        function isExpired() {
+            if (!expiry) return false;
+            try { const d = new Date(expiry.year, expiry.month - 1, expiry.day, expiry.hour, expiry.minute, 0); return new Date() > d; }
+            catch(e) { return false; }
+        }
+
+        function multiDecrypt(data, pass, layers=10) {
+            let curr = data;
+            try {
+                for (let i = layers - 1; i >= 0; i--) {
+                    const key = pass + i;
+                    const bytes = CryptoJS.AES.decrypt(curr, key);
+                    const utf8 = bytes.toString(CryptoJS.enc.Utf8);
+                    if (!utf8 && i>0) throw new Error('fail');
+                    if (utf8) {
+                        const parts = utf8.split("|");
+                        if (parts.length < 3 || parts[parts.length-2] !== pass) throw new Error('fail');
+                        curr = parts.slice(0, parts.length-2).join('|');
+                    } else curr = "";
+                } return curr;
+            } catch(e) { throw new Error('fail'); }
+        }
+
+        function processStudyMode() {
+            if(layoutMode !== 'study') return;
+            mdCont.classList.add('study-mode');
+            const children = Array.from(mdCont.children);
+            let qCount = 0; let lastQ = null; let lastA = null;
+
+            children.forEach((el, i) => {
+                const isIndented = /^\\s{4,}/.test(el.innerHTML);
+                const hasStrong = el.querySelector(':scope > strong:only-child');
+                const isOnlyStrong = hasStrong && hasStrong.textContent.trim() === el.textContent.trim();
+                const isExp = el.querySelector(':scope > em > strong') || (el.tagName === 'LI' && el.querySelector(':scope > em > strong'));
+
+                if(el.tagName === 'P' && isOnlyStrong && !isIndented) {
+                    el.classList.add('study-question'); lastQ = el; lastA = null;
+                } else if(lastQ && isIndented && isOnlyStrong) {
+                    el.classList.add('study-answer'); qCount++;
+                    const expId = 'exp-'+qCount; el.dataset.target = expId; lastA = el;
+                    el.addEventListener('click', function() {
+                        const tgt = document.getElementById(this.dataset.target);
+                        if(tgt) tgt.classList.toggle('visible');
+                    });
+                } else if(lastA && isExp) {
+                    el.classList.add('study-explanation'); el.id = lastA.dataset.target;
+                }
+            });
+        }
+
+        function render(html) {
+            imgCont.className = 'layout-' + imgLayout;
+            imgUrls.forEach(url => {
+                const div = document.createElement('div'); div.className = 'img-item';
+                div.innerHTML = \`<img src="\${url}" onerror="this.style.display='none'">\`;
+                imgCont.appendChild(div);
+            });
+            
+            mdCont.innerHTML = html;
+            processStudyMode();
+
+            frameUrls.forEach(url => {
+                const w = document.createElement('div'); w.className = 'iframe-wrapper';
+                w.innerHTML = \`<iframe src="\${url}" allowfullscreen loading="lazy"></iframe>\`;
+                frameCont.appendChild(w);
+            });
+        }
+
+        function checkPass(e) {
+            e.preventDefault();
+            const p = passInp.value.trim();
+            err.classList.remove('show');
+            try {
+                const html = multiDecrypt(encryptedData, p);
+                render(html);
+                passSec.style.display = 'none';
+                contSec.classList.add('visible');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch(ex) {
+                err.classList.add('show'); passInp.value = '';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if(isExpired()) { body.classList.add('expired'); }
+        });
+    <\/script>
+</body>
+</html>`;
+        }
+
+        // ====== GENERATOR PAGE FUNCTIONS ======
+        function handleGenerate() {
+             const md = markdownInput.value.trim();
+             const pass = outputPasswordInput.value;
+             const layout = document.querySelector('input[name="page-layout"]:checked').value;
+             const imgLyt = imageLayoutSelect.value;
+             
+             // Simplified validation for demo
+             if (!pass || pass.length < 8) {
+                 showStatus("Encryption key must be at least 8 characters.", "error");
+                 return;
+             }
+
+             const getUrls = (container) => {
+                 return Array.from(container.querySelectorAll('input[type="url"]'))
+                     .map(i => i.value.trim()).filter(u => isValidUrl(u));
+             };
+             
+             let expDet = null;
+             if(expiryYearInput.value && expiryMonthInput.value && expiryDayInput.value) {
+                 expDet = {
+                     year: parseInt(expiryYearInput.value), month: parseInt(expiryMonthInput.value),
+                     day: parseInt(expiryDayInput.value), hour: parseInt(expiryHourInput.value)||0,
+                     minute: parseInt(expiryMinuteInput.value)||0
+                 };
+             }
+
+             try {
+                 if (typeof marked === 'undefined') throw new Error("Marked library missing.");
+                 let parsedHtml = ""; 
+                 if (md) { 
+                     marked.setOptions({ gfm: true, breaks: true }); 
+                     parsedHtml = marked.parse(md); 
+                 }
+
+                 showStatus("Processing payload...", "info");
+                 generateButton.disabled = true; 
+                 generateButton.textContent = 'INITIALIZING...';
+
+                 setTimeout(() => {
+                     try {
+                         fullHtmlToCopy = generateTargetHtmlTemplate(parsedHtml, pass, layout, imgLyt, getUrls(imageUrlList), getUrls(iframeUrlList), expDet);
+                         showStatus("Protocol Complete. Source ready for extraction.", "success");
+                         copyButton.disabled = false; 
+                     } catch (err) { 
+                         showStatus(`Error: ${err.message}`, "error"); 
+                     } finally { 
+                         generateButton.disabled = false; 
+                         generateButton.textContent = 'Initialize Protocol'; 
+                     }
+                 }, 500);
+
+             } catch (e) { showStatus(`Error: ${e.message}`, "error"); }
+        }
+
+        function handleCopy() { 
+            if (!fullHtmlToCopy) return;
+
+            // Sử dụng textarea ẩn để copy (Vượt qua giới hạn iframe)
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = fullHtmlToCopy;
+            tempTextArea.style.position = 'fixed'; // Tránh scroll trang
+            tempTextArea.style.left = '-9999px';
+            tempTextArea.style.top = '0';
+            document.body.appendChild(tempTextArea);
+            tempTextArea.focus();
+            tempTextArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    copyButton.classList.add('copied'); 
+                    copyButton.textContent = 'EXTRACTED'; 
+                    showStatus("Dữ liệu đã được copy vào Clipboard! ✨", "success");
+                    setTimeout(() => { 
+                        copyButton.classList.remove('copied'); 
+                        copyButton.textContent = 'Extract Source'; 
+                    }, 3000); 
+                } else {
+                    throw new Error("Lệnh copy thất bại");
+                }
+            } catch (err) {
+                showStatus("Lỗi copy tự động. Nhấn F12 để lấy code trong Console.", "error"); 
+                console.log("--- SOURCE CODE ---");
+                console.log(fullHtmlToCopy);
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+             generateButton.addEventListener('click', handleGenerate);
+             copyButton.addEventListener('click', handleCopy);
+        });
+    </script>
+</body>
+</html>
