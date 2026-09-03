@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nguyễn Ái Quốc &amp; sự ra đời của Đảng Cộng sản Việt Nam — 1930</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@1,400;1,600&display=swap');
+
+  :root{
+    --ink:#0f0e0c; --ink2:#161512; --ink3:#1c1a16;
+    --bone:#e9e4d8; --dim:#8f897c; --faint:rgba(233,228,216,.14);
+    --red:#e03a2f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--bone);font-family:'Barlow Condensed',sans-serif}
+  ::selection{background:var(--red);color:var(--bone)}
+  .lucide{width:1em;height:1em;stroke-width:2;vertical-align:-.14em}
+
+  .presentation{width:100vw;height:100vh;position:relative;overflow:hidden}
+  .slide{position:absolute;inset:0;padding:9vh 5vw 8vh;opacity:0;pointer-events:none;display:flex;flex-direction:column;will-change:transform,opacity}
+  .slide.active{opacity:1;pointer-events:auto}
+
+  /* ===== ambient ===== */
+  #dust{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .bg-grid{position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px);
+    background-size:72px 72px;opacity:.5;
+    mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 95%);}
+  .bg-grid::after{content:'';position:absolute;inset:0;
+    background-image:linear-gradient(rgba(233,228,216,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(233,228,216,.09) 1px,transparent 1px);
+    background-size:288px 288px;}
+  .noise{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .orbit{position:absolute;border:1px dashed rgba(233,228,216,.16);border-radius:50%;pointer-events:none;z-index:0;animation:spin 90s linear infinite}
+  .orbit::after{content:'';position:absolute;top:-4px;left:50%;width:7px;height:7px;background:var(--red);border-radius:50%}
+  .orbit.o2{animation-duration:140s;animation-direction:reverse;border-style:dotted;border-color:rgba(233,228,216,.1)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .cross{position:absolute;width:15px;height:15px;pointer-events:none;z-index:2;opacity:.55}
+  .cross::before,.cross::after{content:'';position:absolute;background:var(--bone)}
+  .cross::before{left:50%;top:0;width:1px;height:100%}
+  .cross::after{top:50%;left:0;height:1px;width:100%}
+
+  /* ===== type ===== */
+  .mono{font-family:'JetBrains Mono',monospace}
+  .disp{font-family:'Anton',sans-serif;letter-spacing:.015em;line-height:.92;text-transform:uppercase}
+  .serif{font-family:'Playfair Display',serif;font-style:italic}
+  .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
+  .lbl.red{color:var(--red)}
+  .lbl.bone{color:var(--bone)}
+
+  /* ===== chrome ===== */
+  .progress{position:fixed;top:0;left:0;height:2px;background:var(--red);width:0%;z-index:120}
+  .top-bar{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;justify-content:space-between;align-items:center;padding:16px 26px;pointer-events:none}
+  .brand{display:flex;align-items:center;gap:10px;pointer-events:auto}
+  .brand .star{color:var(--red);font-size:15px;line-height:1}
+  .brand b{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--bone);font-weight:500}
+  .brand span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--dim)}
+  .top-actions{display:flex;gap:8px;pointer-events:auto}
+  .tbtn{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border:1px solid var(--faint);background:transparent;color:var(--dim);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;transition:all .25s}
+  .tbtn:hover{border-color:var(--bone);color:var(--ink);background:var(--bone)}
+  .tbtn .lucide{width:13px;height:13px}
+
+  .hud{position:fixed;bottom:22px;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0 26px;pointer-events:none}
+  .hud-left{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--dim)}
+  .hud-left b{color:var(--bone);font-weight:500;font-size:15px}
+  .hud-left .sep{color:var(--red);margin:0 6px}
+  .hud-mid{display:flex;gap:16px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;color:rgba(233,228,216,.35)}
+  .hud-mid kbd{border:1px solid var(--faint);padding:1px 5px;color:var(--dim);font-family:inherit}
+  .hud-right{display:flex;gap:8px;pointer-events:auto}
+  .nbtn{width:44px;height:44px;border:1px solid var(--faint);background:transparent;color:var(--bone);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+  .nbtn:hover{background:var(--bone);color:var(--ink);border-color:var(--bone)}
+  .nbtn:disabled{opacity:.25;cursor:not-allowed}
+  .nbtn:disabled:hover{background:transparent;color:var(--bone)}
+  .nbtn .lucide{width:17px;height:17px}
+  .dots{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:9px}
+  .dot{width:7px;height:7px;background:rgba(233,228,216,.2);cursor:pointer;transition:all .3s;position:relative}
+  .dot:hover{background:rgba(233,228,216,.6)}
+  .dot.on{background:var(--red);transform:scale(1.35)}
+  .dot::after{content:attr(data-t);position:absolute;right:18px;top:50%;transform:translateY(-50%) translateX(6px);white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--bone);background:var(--ink2);border:1px solid var(--faint);padding:3px 8px;opacity:0;transition:all .25s;pointer-events:none}
+  .dot:hover::after{opacity:1;transform:translateY(-50%)}
+
+  /* ===== slide head ===== */
+  .s-head{position:relative;z-index:2;margin-bottom:2.6vh}
+  .s-head-row{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--faint);padding-bottom:10px;margin-bottom:18px}
+  .s-head-row .l{display:flex;align-items:center;gap:10px}
+  .s-head-row .l .lucide{width:13px;height:13px;color:var(--red)}
+  .s-title{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(30px,4.3vw,62px);line-height:.95;letter-spacing:.01em}
+  .s-title .rd{color:var(--red)}
+  .s-title .sub{display:block;font-family:'Playfair Display',serif;font-style:italic;text-transform:none;font-size:clamp(13px,1.1vw,19px);font-weight:400;letter-spacing:0;color:var(--dim);margin-top:10px}
+  .s-idx{position:absolute;top:16vh;right:4vw;z-index:0;font-family:'Anton',sans-serif;font-size:clamp(90px,13vw,200px);line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(233,228,216,.13);pointer-events:none;user-select:none}
+
+  .body{overflow-y:auto;flex:1;position:relative;z-index:2;padding-right:10px;scrollbar-width:thin;scrollbar-color:var(--red) transparent}
+  .body::-webkit-scrollbar{width:3px}
+  .body::-webkit-scrollbar-thumb{background:var(--red)}
+
+  /* ===== panels / content ===== */
+  .panel{background:var(--ink2);border:1px solid var(--faint);padding:18px 20px;position:relative;transition:border-color .3s,transform .3s,background .3s}
+  .panel:hover{border-color:rgba(233,228,216,.4);transform:translateY(-2px);background:var(--ink3)}
+  .panel .pno{position:absolute;top:14px;right:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.15em}
+  .panel h4{display:flex;align-items:center;gap:9px;font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone);margin-bottom:7px}
+  .panel h4 .lucide{width:15px;height:15px;color:var(--red);flex-shrink:0}
+  .panel p{font-size:16px;line-height:1.5;color:rgba(233,228,216,.82)}
+  .panel p b{color:var(--bone);font-weight:600}
+  .panel p .rd{color:var(--red);font-weight:600}
+
+  .kp{display:flex;gap:12px;margin-bottom:12px;font-size:17px;line-height:1.45;align-items:flex-start}
+  .kp .n{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);border:1px solid rgba(224,58,47,.45);padding:2px 6px;flex-shrink:0;margin-top:3px;letter-spacing:.1em}
+  .kp b{color:var(--bone);font-weight:600}
+
+  .quote{border-left:2px solid var(--red);padding:6px 0 6px 24px;position:relative}
+  .quote::before{content:'“';position:absolute;left:8px;top:-14px;font-family:'Playfair Display',serif;font-size:64px;color:var(--red);opacity:.85}
+  .quote p{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(15px,1.25vw,21px);line-height:1.55;color:var(--bone)}
+  .quote .src{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--dim);margin-top:12px;text-transform:uppercase}
+
+  table.dt{width:100%;border-collapse:collapse;font-size:15px}
+  .dt th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 14px 10px;border-bottom:1px solid var(--bone);font-weight:500}
+  .dt td{padding:13px 14px;border-bottom:1px solid var(--faint);vertical-align:top;color:rgba(233,228,216,.85);transition:background .25s}
+  .dt tr:hover td{background:rgba(233,228,216,.04)}
+  .dt .no{font-family:'Anton',sans-serif;font-size:26px;color:var(--red);text-align:center;min-width:44px}
+  .dt .yr{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--bone)}
+  .dt .pl{font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
+
+  /* ===== figures (halftone duotone) ===== */
+  .fig{position:relative;border:1px solid var(--faint);background:var(--ink2);overflow:hidden;cursor:zoom-in}
+  .fig img{width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;filter:grayscale(1) contrast(1.18) brightness(.88);opacity:0;transition:opacity .9s ease,transform .8s ease,filter .5s}
+  .fig img.ok{opacity:.92}
+  .fig:hover img.ok{transform:scale(1.04);filter:grayscale(1) contrast(1.25) brightness(.98)}
+  .fig img.err{display:none}
+  .fig::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(15,14,12,.9) 1px,transparent 1.3px);background-size:3px 3px;opacity:.4;mix-blend-mode:multiply}
+  .fig.tint::before{content:'';position:absolute;inset:0;z-index:1;background:var(--red);mix-blend-mode:color;opacity:.5;pointer-events:none}
+  .fig .fb{display:none;position:absolute;inset:0;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:42px;color:rgba(233,228,216,.18);letter-spacing:.1em}
+  .fig img.err ~ .fb{display:flex}
+  .fig .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;justify-content:space-between;gap:10px;padding:20px 10px 7px;background:linear-gradient(transparent,rgba(15,14,12,.94));font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+  .fig .cap b{color:var(--bone);font-weight:500}
+  .fig .zi{position:absolute;top:8px;right:8px;z-index:2;width:26px;height:26px;border:1px solid var(--faint);background:rgba(15,14,12,.7);color:var(--bone);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
+  .fig .zi .lucide{width:13px;height:13px}
+  .fig:hover .zi{opacity:1}
+  .fig.p34{aspect-ratio:3/4;height:auto!important}
+
+  .banner{background:var(--red);color:var(--ink);padding:20px 26px;display:flex;align-items:center;gap:16px}
+  .banner .lucide{width:22px;height:22px;flex-shrink:0}
+  .banner p{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(16px,1.6vw,24px);letter-spacing:.03em;line-height:1.2;color:#160907}
+  .banner p em{font-style:normal;background:var(--ink);color:var(--bone);padding:2px 8px;margin:0 6px}
+
+  .doc{background:var(--bone);color:#221d15;padding:22px 24px;position:relative;transform:rotate(-1deg);transition:transform .4s;box-shadow:8px 8px 0 rgba(224,58,47,.85)}
+  .doc:hover{transform:rotate(0)}
+  .doc h5{font-family:'Anton',sans-serif;font-size:18px;text-align:center;letter-spacing:.1em;color:#a02015}
+  .doc .ds{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.24em;text-align:center;color:#7a6f5c;margin:4px 0 12px}
+  .doc p{font-family:'Playfair Display',serif;font-style:italic;font-size:13.5px;line-height:1.6}
+  .doc .sgn{margin-top:12px;text-align:right;font-weight:700;font-size:13px;color:#a02015;font-family:'Barlow Condensed',sans-serif;letter-spacing:.05em}
+
+  /* timeline svg */
+  .tl svg{width:100%;height:70px;display:block;overflow:visible}
+  .tl .ln{stroke:rgba(233,228,216,.45);stroke-width:1.5}
+  .tl .nd{fill:var(--ink);stroke:var(--bone);stroke-width:2}
+  .tl .nd.hot{stroke:var(--red)}
+  .tl text.y{font-family:'JetBrains Mono',monospace;font-size:11px;fill:var(--bone);letter-spacing:.08em}
+  .tl text.s{font-family:'Barlow Condensed',sans-serif;font-size:13px;fill:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+
+  /* quiz */
+  .qdots{display:flex;gap:7px;margin-bottom:14px}
+  .qd{width:34px;height:4px;background:rgba(233,228,216,.15);transition:all .35s}
+  .qd.cur{background:var(--bone)}
+  .qd.ok{background:#5fbf7a}.qd.bad{background:var(--red)}
+  .qopt{display:flex;align-items:center;gap:14px;border:1px solid var(--faint);background:var(--ink2);padding:12px 16px;margin-bottom:8px;cursor:pointer;font-size:16px;transition:all .22s}
+  .qopt:hover{border-color:rgba(233,228,216,.5);transform:translateX(4px)}
+  .qopt .L{font-family:'Anton',sans-serif;font-size:18px;color:var(--red);min-width:24px}
+  .qopt .k{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);border:1px solid var(--faint);padding:1px 6px}
+  .qopt.sel{border-color:var(--bone);background:var(--ink3)}
+  .qopt.good{border-color:#5fbf7a;background:rgba(95,191,122,.1)}
+  .qopt.bad{border-color:var(--red);background:rgba(224,58,47,.1)}
+  .qfb{border:1px solid var(--faint);border-left:2px solid var(--red);background:var(--ink2);padding:16px 18px;font-size:15px;line-height:1.55;max-height:0;opacity:0;overflow:hidden}
+  .qfb.show{max-height:640px;opacity:1;transition:all .5s}
+  .qfb .hd{display:flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;margin-bottom:9px;text-transform:uppercase}
+  .qfb .hd .lucide{width:16px;height:16px}
+  .qbtn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 20px;border:1px solid var(--bone);background:transparent;color:var(--bone);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer;transition:all .25s;text-transform:uppercase}
+  .qbtn:hover{background:var(--bone);color:var(--ink)}
+  .qbtn:disabled{opacity:.3;cursor:not-allowed}
+  .qbtn:disabled:hover{background:transparent;color:var(--bone)}
+  .qbtn.pri{background:var(--red);border-color:var(--red);color:#160907}
+  .qbtn.pri:hover{background:var(--bone);border-color:var(--bone);color:var(--ink)}
+  .qbtn .lucide{width:14px;height:14px}
+  .ring svg{width:104px;height:104px;rotate:-90deg}
+  .ring .rb{fill:none;stroke:rgba(233,228,216,.15);stroke-width:7}
+  .ring .rv{fill:none;stroke:var(--red);stroke-width:7;stroke-linecap:square}
+
+  .ref{display:flex;gap:14px;padding:11px 4px;border-bottom:1px solid var(--faint);font-size:15px;line-height:1.45;color:rgba(233,228,216,.85);transition:all .25s}
+  .ref:hover{padding-left:12px;color:var(--bone)}
+  .ref .rn{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);flex-shrink:0;padding-top:2px}
+
+  /* cover */
+  .cov-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.34em;color:var(--dim);text-transform:uppercase;margin-bottom:26px}
+  .cov-eyebrow i{width:22px;height:1px;background:var(--red);display:inline-block}
+  .cov-title{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(42px,6.4vw,104px);line-height:.92;letter-spacing:.005em}
+  .cov-title .ln{display:block;overflow:hidden}
+  .cov-title .ln>span{display:block}
+  .cov-title .rd{color:var(--red)}
+  .cov-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(15px,1.25vw,21px);color:rgba(233,228,216,.8);margin-top:24px;max-width:600px;line-height:1.55}
+  .cov-star{position:absolute;right:-4vw;bottom:-6vh;font-family:'Anton',sans-serif;font-size:min(46vw,620px);line-height:1;color:transparent;-webkit-text-stroke:1px rgba(224,58,47,.22);z-index:0;pointer-events:none;user-select:none}
+  .colophon{position:absolute;left:5vw;right:5vw;bottom:11vh;z-index:2;display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--faint);padding-top:10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+  .colophon b{color:var(--bone);font-weight:500}
+
+  /* overlays */
+  .ovl{position:fixed;inset:0;z-index:200;background:rgba(15,14,12,.97);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s}
+  .ovl.show{opacity:1;pointer-events:auto}
+  .toc{max-width:680px;width:92%;max-height:84vh;overflow-y:auto}
+  .toc h2{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:34px;letter-spacing:.03em;border-bottom:1px solid var(--bone);padding-bottom:12px;margin-bottom:8px;display:flex;align-items:center;gap:14px}
+  .toc h2 .lucide{width:24px;height:24px;color:var(--red)}
+  .titem{display:flex;align-items:center;gap:16px;padding:11px 6px;border-bottom:1px solid var(--faint);cursor:pointer;transition:all .2s}
+  .titem:hover{padding-left:16px;background:rgba(233,228,216,.04)}
+  .titem .n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);min-width:26px}
+  .titem .t{font-size:17px;letter-spacing:.03em}
+  .titem .lucide{margin-left:auto;width:14px;height:14px;color:var(--dim)}
+  .lb{position:fixed;inset:0;z-index:300;background:rgba(10,9,8,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+  .lb.show{opacity:1;pointer-events:auto}
+  .lb img{max-width:80vw;max-height:72vh;border:1px solid var(--faint);filter:grayscale(1) contrast(1.15)}
+  .lb .c{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
+  .lb .x{position:absolute;top:24px;right:28px;width:44px;height:44px;border:1px solid var(--faint);background:transparent;color:var(--bone);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+  .lb .x:hover{background:var(--bone);color:var(--ink)}
+
+  .intro{position:fixed;inset:0;z-index:400;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+  .intro .st{font-family:'Anton',sans-serif;font-size:96px;color:var(--red);line-height:1}
+  .intro .tx{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.5em;color:var(--bone)}
+  .intro .br{width:200px;height:1px;background:rgba(233,228,216,.15)}
+  .intro .br i{display:block;height:100%;width:0;background:var(--red)}
+
+  @media(max-width:1000px){
+    .cov-fig,.dots,.hud-mid{display:none}
+    .s-idx{font-size:110px}
+    .hud-right .nbtn{width:40px;height:40px}
+  }
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro">
+  <div class="st">★</div>
+  <div class="tx">03 · 02 · 1930</div>
+  <div class="br"><i id="ibar"></i></div>
+</div>
+
+<div class="progress" id="progress"></div>
+
+<div class="top-bar">
+  <div class="brand"><span class="star">★</span><b>ĐẢNG CỘNG SẢN VIỆT NAM</b><span>/ TƯ LIỆU 1930</span></div>
+  <div class="top-actions">
+    <button class="tbtn" id="tocBtn"><i data-lucide="list"></i> MỤC LỤC</button>
+    <button class="tbtn" id="fsBtn"><i data-lucide="maximize"></i> TOÀN MÀN HÌNH</button>
+  </div>
+</div>
+
+<div class="presentation">
+  <canvas id="dust"></canvas>
+  <div class="bg-grid"></div>
+  <div class="orbit" style="width:640px;height:640px;right:-220px;top:-220px;"></div>
+  <div class="orbit o2" style="width:420px;height:420px;left:-160px;bottom:-160px;"></div>
+  <div class="noise"></div>
+
+  <!-- ======= 1 · BÌA ======= -->
+  <section class="slide active" data-s="1">
+    <div class="cross" style="top:9vh;left:5vw;"></div>
+    <div class="cross" style="top:9vh;right:5vw;"></div>
+    <div class="cov-star">★</div>
+    <div class="relative z-10 flex items-center justify-between h-full gap-12">
+      <div class="flex-1">
+        <div class="cov-eyebrow" data-a="fade"><i></i> MÔN LỊCH SỬ ĐẢNG — NGHIÊN CỨU HỌC THUẬT</div>
+        <h1 class="cov-title">
+          <span class="ln"><span data-a="line">NGUYỄN ÁI QUỐC</span></span>
+          <span class="ln"><span data-a="line">VÀ SỰ RA ĐỜI CỦA</span></span>
+          <span class="ln"><span data-a="line">ĐẢNG CỘNG SẢN</span></span>
+          <span class="ln"><span data-a="line" class="rd">VIỆT NAM</span></span>
+        </h1>
+        <p class="cov-sub" data-a="up">Phân tích vai trò lịch sử của lãnh tụ Nguyễn Ái Quốc đối với sự kiện thành lập Đảng — trên ba phương diện: tư tưởng, tổ chức và chính trị.</p>
+      </div>
+      <div class="fig tint cov-fig" style="width:min(360px,26vw);height:min(480px,58vh);flex-shrink:0" data-a="fade">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Portrait%20dated%201922%20of%20Ho%20Chi%20Minh.jpg?width=700" alt="Nguyễn Ái Quốc tại Paris, 1922" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+        <div class="fb">★ 1922</div>
+        <div class="zi"><i data-lucide="zoom-in"></i></div>
+        <div class="cap"><span><b>HÌNH 01</b> — NGUYỄN ÁI QUỐC</span><span>PARIS · 1922</span></div>
+      </div>
+    </div>
+    <div class="colophon">
+      <span>TƯ LIỆU: <b>WIKIMEDIA COMMONS</b> · BẢO TÀNG LỊCH SỬ QUỐC GIA</span>
+      <span>1911 → 1930 · <b>BA CHẶNG ĐƯỜNG</b></span>
+      <span>HTML / CSS / JS + <b>GSAP</b></span>
+    </div>
+  </section>
+
+  <!-- ======= 2 · BỐI CẢNH ======= -->
+  <section class="slide" data-s="2">
+    <div class="s-idx">02</div>
+    <div class="cross" style="top:9vh;right:5vw;"></div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="compass"></i><span class="lbl red">CH.01 — BỐI CẢNH</span></div>
+        <span class="lbl">SLIDE 02 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">BỐI CẢNH LỊCH SỬ<br><span class="rd">VÀ ĐẶT VẤN ĐỀ</span></h2>
+    </header>
+    <div class="body grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <div class="panel mb-3" data-a="up"><span class="pno">2.1</span>
+          <h4><i data-lucide="cloud-fog"></i> Khủng hoảng cuối XIX – đầu XX</h4>
+          <p>Việt Nam khủng hoảng sâu sắc về <b>đường lối cứu nước</b> và <b>giai cấp lãnh đạo</b> sau khi Pháp hoàn thành cuộc xâm lược.</p>
+        </div>
+        <div class="panel mb-3" data-a="up"><span class="pno">2.2</span>
+          <h4><i data-lucide="flag"></i> Các phong trào yêu nước thất bại</h4>
+          <p>Cần Vương, Đông Du, Duy Tân, khởi nghĩa Yên Thế… lần lượt sụp đổ — không tìm ra lối đi đúng đắn cho dân tộc.</p>
+        </div>
+        <div class="panel" data-a="up"><span class="pno">2.3</span>
+          <h4><i data-lucide="sunrise"></i> Cách mạng Tháng Mười Nga · 1917</h4>
+          <p>Mở ra thời đại mới — nhưng <span class="rd">ai sẽ đưa chủ nghĩa Mác-Lênin về Việt Nam?</span></p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-5">
+        <div class="fig" style="height:290px" data-a="up">
+          <img src="https://images.pexels.com/photos/33908130/pexels-photo-33908130.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Đông Dương thuộc địa đầu thế kỷ XX" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">FIG.02</div>
+          <div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>HÌNH 02</b> — ĐÔNG DƯƠNG THUỘC ĐỊA</span><span>ĐẦU TK. XX</span></div>
+        </div>
+        <div class="quote" data-a="up">
+          <p>Người duy nhất tại thời điểm đó vừa có trình độ lý luận Mác-Lênin, vừa am hiểu sâu sắc thực tiễn Việt Nam.</p>
+          <div class="src">CÂU HỎI NGHIÊN CỨU — TẠI SAO NGUYỄN ÁI QUỐC LÀ NHÂN TỐ QUYẾT ĐỊNH?</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 3 · HÀNH TRÌNH ======= -->
+  <section class="slide" data-s="3">
+    <div class="s-idx">03</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="ship"></i><span class="lbl red">CH.02 — 1911–1920</span></div>
+        <span class="lbl">SLIDE 03 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">HÀNH TRÌNH <span class="rd">TÌM ĐƯỜNG CỨU NƯỚC</span>
+        <span class="sub">Từ Bến Nhà Rồng đến Đại hội Tours — bước ngoặt tư tưởng</span></h2>
+    </header>
+    <div class="body">
+      <div class="tl mb-5" data-a="fade">
+        <svg viewBox="0 0 1000 70" preserveAspectRatio="none">
+          <line class="ln" x1="70" y1="28" x2="930" y2="28" stroke-dasharray="860" stroke-dashoffset="860"></line>
+          <circle class="nd" cx="70" cy="28" r="6"></circle>
+          <circle class="nd" cx="500" cy="28" r="6"></circle>
+          <circle class="nd hot" cx="930" cy="28" r="8"></circle>
+          <text class="y" x="70" y="12" text-anchor="middle">05.06.1911</text>
+          <text class="s" x="70" y="54" text-anchor="middle">Bến Nhà Rồng</text>
+          <text class="y" x="500" y="12" text-anchor="middle">07.1920</text>
+          <text class="s" x="500" y="54" text-anchor="middle">Luận cương Lênin</text>
+          <text class="y" x="930" y="12" text-anchor="middle">12.1920</text>
+          <text class="s" x="930" y="54" text-anchor="middle">Đại hội Tours</text>
+        </svg>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
+        <div class="panel" data-a="up"><span class="pno">3.1</span>
+          <h4><i data-lucide="ship"></i> Bến Nhà Rồng · 5/6/1911</h4>
+          <p>Nguyễn Tất Thành rời Sài Gòn trên tàu <em>Amiral Latouche Tréville</em>, bắt đầu hành trình tìm đường cứu nước.</p>
+          <div class="fig mt-3" style="height:180px">
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/T%C6%B0%E1%BB%A3ng%20Nguy%E1%BB%85n%20%C3%81i%20Qu%E1%BB%91c%20-%20Nguy%E1%BB%85n%20T%E1%BA%A5t%20Th%C3%A0nh%20-%20Nh%C3%A0%20t%C6%B0%E1%BB%9Fng%20ni%E1%BB%87m%20B%E1%BA%BFn%20Nh%C3%A0%20R%E1%BB%93ng.JPG?width=600" alt="Tượng Nguyễn Tất Thành, Bến Nhà Rồng" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+            <div class="fb">FIG.03</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+            <div class="cap"><span><b>HÌNH 03</b></span><span>BẾN NHÀ RỒNG</span></div>
+          </div>
+        </div>
+        <div class="panel" data-a="up"><span class="pno">3.2</span>
+          <h4><i data-lucide="book-open"></i> Luận cương Lênin · 7/1920</h4>
+          <p>Đọc <em>Sơ thảo luận cương về vấn đề dân tộc và thuộc địa</em> — tìm ra con đường cách mạng đúng đắn.</p>
+          <div class="fig mt-3" style="height:180px">
+            <img src="https://images.pexels.com/photos/11769806/pexels-photo-11769806.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Moskva" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+            <div class="fb">FIG.04</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+            <div class="cap"><span><b>HÌNH 04</b></span><span>MOSKVA · 1917</span></div>
+          </div>
+        </div>
+        <div class="panel" data-a="up"><span class="pno">3.3</span>
+          <h4><i data-lucide="users"></i> Đại hội Tours · 12/1920</h4>
+          <p>Tham gia sáng lập Đảng Cộng sản Pháp — <span class="rd">người cộng sản Việt Nam đầu tiên</span>.</p>
+          <div class="fig mt-3" style="height:180px">
+            <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Nguken%20Ali%20Quac.png?width=600" alt="Nguyễn Ái Quốc, Đại hội Marseille 1921" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+            <div class="fb">FIG.05</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+            <div class="cap"><span><b>HÌNH 05</b></span><span>L'HUMANITÉ · 1921</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="quote" data-a="up">
+        <p>Luận cương của Lênin làm cho tôi rất cảm động, phấn khởi, sáng tỏ, tin tưởng biết bao! Tôi vui mừng đến phát khóc lên… Đây là cái cần thiết cho chúng ta, đây là con đường giải phóng chúng ta!</p>
+        <div class="src">HỒ CHÍ MINH — ĐƯỜNG KÁCH MỆNH (1927) · HỒ CHÍ MINH TOÀN TẬP, T.2</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 4 · BA CHẶNG ======= -->
+  <section class="slide" data-s="4">
+    <div class="s-idx">04</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="route"></i><span class="lbl red">CH.03 — 1921–1930</span></div>
+        <span class="lbl">SLIDE 04 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">BA CHẶNG <span class="rd">TRUYỀN BÁ CHỦ NGHĨA MÁC-LÊNIN</span>
+        <span class="sub">Quá trình chuẩn bị có hệ thống, liên tục trong 9 năm</span></h2>
+    </header>
+    <div class="body grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div class="lg:col-span-2 grid grid-cols-3 gap-3 items-start" data-a="up">
+        <div class="fig p34">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Comrade%20Nguyen%20Ai%20Quoc%20at%20the%20age%20of%2030%20in%20France.jpg?width=600" alt="Nguyễn Ái Quốc tại Pháp" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">01</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>PARIS</b></span><span>21–23</span></div>
+        </div>
+        <div class="fig p34">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Nguyen%20Ai%20Quoc%20in%20the%20Soviet%20Union%20in%201923.jpg?width=600" alt="Nguyễn Ái Quốc tại Liên Xô 1923" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">02</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>MOSKVA</b></span><span>23–24</span></div>
+        </div>
+        <div class="fig p34">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Nguyen%20Ai%20Quoc%20in%201924.jpg?width=600" alt="Nguyễn Ái Quốc 1924" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">03</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>Q.CHÂU</b></span><span>24–27</span></div>
+        </div>
+        <div class="col-span-3 panel">
+          <h4><i data-lucide="sparkles"></i> Nhận định</h4>
+          <p>Quá trình <b>chuẩn bị công phu, có hệ thống</b> — từ tuyên truyền, nghiên cứu lý luận đến đào tạo cán bộ.</p>
+        </div>
+      </div>
+      <div class="lg:col-span-3">
+        <table class="dt mb-5" data-a="up">
+          <thead><tr><th style="width:52px">Chặng</th><th style="width:104px">Thời gian</th><th style="width:130px">Địa bàn</th><th>Hoạt động chủ yếu</th></tr></thead>
+          <tbody>
+            <tr><td class="no">1</td><td class="yr">1921–1923</td><td class="pl">Paris<br><span style="color:var(--dim);font-weight:400;text-transform:none">Pháp</span></td><td>Viết báo <em>Le Paria</em> (Người cùng khổ); bài trên <em>L'Humanité</em>, <em>La Vie Ouvrière</em>; gửi tài liệu bí mật về nước.</td></tr>
+            <tr><td class="no">2</td><td class="yr">1923–1924</td><td class="pl">Moskva<br><span style="color:var(--dim);font-weight:400;text-transform:none">Liên Xô</span></td><td>Công tác tại Quốc tế Nông dân; nghiên cứu sâu lý luận Mác-Lênin; chuẩn bị lực lượng.</td></tr>
+            <tr><td class="no">3</td><td class="yr">1924–1927</td><td class="pl">Quảng Châu<br><span style="color:var(--dim);font-weight:400;text-transform:none">Trung Quốc</span></td><td>Mở lớp huấn luyện chính trị; sáng lập Hội VNCM Thanh niên; xuất bản báo <em>Thanh niên</em>.</td></tr>
+          </tbody>
+        </table>
+        <div class="quote" data-a="up">
+          <p>Ba chặng đường — ba trung tâm cách mạng thế giới — đặt nền tảng vững chắc cho sự ra đời của Đảng năm 1930.</p>
+          <div class="src">PGS.TS PHẠM XANH — NGUYỄN ÁI QUỐC VỚI VIỆC TRUYỀN BÁ CHỦ NGHĨA MÁC–LÊNIN</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 5 · HỘI VNCMTN ======= -->
+  <section class="slide" data-s="5">
+    <div class="s-idx">05</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="users"></i><span class="lbl red">CH.04 — CHUẨN BỊ TỔ CHỨC</span></div>
+        <span class="lbl">SLIDE 05 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">HỘI VIỆT NAM <span class="rd">CÁCH MẠNG THANH NIÊN</span>
+        <span class="sub">Tháng 6/1925 · Tiền thân trực tiếp của Đảng</span></h2>
+    </header>
+    <div class="body grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <div class="kp" data-a="up"><span class="n">5.1</span><div><b>Tháng 6/1925:</b> Nguyễn Ái Quốc sáng lập Hội tại Quảng Châu (Trung Quốc).</div></div>
+        <div class="kp" data-a="up"><span class="n">5.2</span><div><b>Tổng bộ lãnh đạo:</b> Nguyễn Ái Quốc, Hồ Tùng Mậu, Lê Hồng Sơn — trụ sở tại 13 đường Văn Minh, Quảng Châu.</div></div>
+        <div class="kp" data-a="up"><span class="n">5.3</span><div><b>21/6/1925:</b> ra số đầu báo <em style="color:var(--red)">Thanh niên</em> — cơ quan ngôn luận đầu tiên của cách mạng Việt Nam.</div></div>
+        <div class="kp" data-a="up"><span class="n">5.4</span><div><b>Tính chất:</b> đội tiền phong cách mạng của dân chúng Việt Nam.</div></div>
+        <div class="quote mt-4" data-a="up">
+          <p>Tranh đấu để đánh đổ đế quốc chủ nghĩa Pháp và tụi chó săn của chúng nó mà tự cứu lấy mình.</p>
+          <div class="src">MỤC TIÊU CỦA HỘI</div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-5">
+        <div class="fig" style="height:280px" data-a="up">
+          <img src="https://images.pexels.com/photos/32356625/pexels-photo-32356625.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Không gian tư liệu Hội VNCM Thanh niên" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">FIG.06</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>HÌNH 06</b> — TƯ LIỆU HỘI VNCM TN</span><span>QUẢNG CHÂU</span></div>
+        </div>
+        <div class="panel" data-a="up">
+          <h4><i data-lucide="graduation-cap"></i> Ý nghĩa</h4>
+          <p>Hội là <b>“trường học thứ nhất”</b> của những người cộng sản Việt Nam — tổ chức, quy tụ và rèn luyện thanh niên yêu nước tiên tiến, hạt nhân đội ngũ cộng sản tương lai.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 6 · LỚP HUẤN LUYỆN ======= -->
+  <section class="slide" data-s="6">
+    <div class="s-idx">06</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="graduation-cap"></i><span class="lbl red">CH.05 — “TRƯỜNG ĐẢNG” ĐẦU TIÊN</span></div>
+        <span class="lbl">SLIDE 06 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">LỚP HUẤN LUYỆN CHÍNH TRỊ <span class="rd">QUẢNG CHÂU</span>
+        <span class="sub">Giữa 1925 – trước 4/1927 · Số 13 &amp; 13A đường Văn Minh</span></h2>
+    </header>
+    <div class="body">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5">
+        <div class="fig" style="height:230px" data-a="up">
+          <img src="https://images.pexels.com/photos/38966278/pexels-photo-38966278.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Góc nghiên cứu, soạn thảo Đường Kách mệnh" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">FIG.07</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>HÌNH 07</b> — GÓC NGHIÊN CỨU</span><span>1925–1927</span></div>
+        </div>
+        <div class="panel" data-a="up"><span class="pno">SỐ LIỆU</span>
+          <h4 style="font-size:34px;font-family:'Anton',sans-serif;letter-spacing:.02em"><span data-count="70">0</span>+ <span style="font-size:16px;letter-spacing:.08em">CÁN BỘ</span></h4>
+          <p>Hơn 70 cán bộ được huấn luyện chính quy — nòng cốt của cách mạng Việt Nam sau này.</p>
+        </div>
+        <div class="panel" data-a="up"><span class="pno">GIÁO TRÌNH</span>
+          <h4 style="font-size:34px;font-family:'Anton',sans-serif;letter-spacing:.02em"><span data-count="25">0</span> <span style="font-size:16px;letter-spacing:.08em">BÀI GIẢNG</span></h4>
+          <p><em style="color:var(--bone)">Đường Kách mệnh</em> (1927) — tuyển tập bài giảng kinh điển của Nguyễn Ái Quốc.</p>
+        </div>
+      </div>
+      <div class="lbl red mb-3" data-a="fade" style="font-size:11px">— NỘI DUNG GIẢNG DẠY</div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" data-a="up">
+        <div class="panel"><span class="pno">6.1</span><h4><i data-lucide="brain"></i> Lý luận</h4><p>Chủ nghĩa Mác-Lênin cơ bản — phép biện chứng, kinh tế chính trị, CNXH khoa học.</p></div>
+        <div class="panel"><span class="pno">6.2</span><h4><i data-lucide="signpost"></i> Đường lối</h4><p>Cách mạng giải phóng dân tộc gắn với cách mạng vô sản; độc lập dân tộc và CNXH.</p></div>
+        <div class="panel"><span class="pno">6.3</span><h4><i data-lucide="wrench"></i> Phương pháp</h4><p>Tổ chức, vận động quần chúng, xây dựng cơ sở bí mật trong nước.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 7 · BA TỔ CHỨC ======= -->
+  <section class="slide" data-s="7">
+    <div class="s-idx">07</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="git-branch"></i><span class="lbl red">CH.06 — 1929 · TÌNH THẾ CHIA RẼ</span></div>
+        <span class="lbl">SLIDE 07 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">BA TỔ CHỨC CỘNG SẢN <span class="rd">RA ĐỜI</span>
+        <span class="sub">Điều kiện thành lập Đảng đã chín muồi — nhưng nảy sinh nguy cơ chia rẽ</span></h2>
+    </header>
+    <div class="body">
+      <table class="dt mb-5" data-a="up">
+        <thead><tr><th>Tổ chức</th><th style="width:120px">Thời gian</th><th>Tiền thân</th><th style="width:170px">Địa bàn</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:600;letter-spacing:.04em">ĐÔNG DƯƠNG CỘNG SẢN ĐẢNG</td><td class="yr">17/6/1929</td><td>Kỳ bộ Bắc Kỳ Hội VNCM TN</td><td>Miền Bắc (Hà Nội)</td></tr>
+          <tr><td style="font-weight:600;letter-spacing:.04em">AN NAM CỘNG SẢN ĐẢNG</td><td class="yr">8/1929</td><td>Tổng bộ &amp; Kỳ bộ Nam Kỳ Hội VNCM TN</td><td>Miền Nam</td></tr>
+          <tr><td style="font-weight:600;letter-spacing:.04em">ĐÔNG DƯƠNG CỘNG SẢN LIÊN ĐOÀN</td><td class="yr">9/1929</td><td>Tân Việt Cách mạng Đảng</td><td>Trung kỳ &amp; hải ngoại</td></tr>
+        </tbody>
+      </table>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="panel" data-a="up" style="border-left:2px solid var(--red)">
+          <h4><i data-lucide="triangle-alert"></i> Vấn đề nảy sinh</h4>
+          <p>Ba tổ chức hoạt động <span class="rd">riêng rẽ, cạnh tranh, đả kích lẫn nhau</span> — phong trào cộng sản đứng trước nguy cơ chia rẽ nghiêm trọng.</p>
+        </div>
+        <div class="panel" data-a="up">
+          <h4><i data-lucide="git-merge"></i> Đòi hỏi khách quan</h4>
+          <p>Hợp nhất thành một Đảng duy nhất — cần <b>một người đủ tầm nhìn và uy tín</b> để kết nối: Nguyễn Ái Quốc.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 8 · HỢP NHẤT ======= -->
+  <section class="slide" data-s="8">
+    <div class="s-idx">08</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="handshake"></i><span class="lbl red">CH.07 — SỰ KIỆN TRỌNG ĐẠI</span></div>
+        <span class="lbl">SLIDE 08 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">HỘI NGHỊ <span class="rd">HỢP NHẤT</span>
+        <span class="sub">6/1 — 7/2/1930 · Cửu Long, Hương Cảng (Hồng Kông)</span></h2>
+    </header>
+    <div class="body">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 mb-5">
+        <div class="fig" style="height:220px" data-a="up">
+          <img src="https://images.pexels.com/photos/30503699/pexels-photo-30503699.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Cờ búa liềm" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">FIG.08</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>HÌNH 08</b> — CỜ ĐẢNG</span><span>BIỂU TƯỢNG</span></div>
+        </div>
+        <div class="panel" data-a="up"><span class="pno">8.1</span><h4><i data-lucide="gavel"></i> Chủ trì</h4><p><b>Nguyễn Ái Quốc</b> — phái viên Quốc tế Cộng sản; thuyết phục các phe phái đặt lợi ích cách mạng lên trên hết.</p></div>
+        <div class="panel" data-a="up"><span class="pno">8.2</span><h4><i data-lucide="users"></i> Thành phần</h4><p>ĐDCSĐ: <em style="color:var(--bone)">Trịnh Đình Cửu, Nguyễn Đức Cảnh</em>; An Nam CSĐ: <em style="color:var(--bone)">Châu Văn Liêm, Nguyễn Thiệu</em>.</p></div>
+        <div class="panel" data-a="up"><span class="pno">8.3</span><h4><i data-lucide="award"></i> Kết quả</h4><p>Thành lập <span class="rd">Đảng Cộng sản Việt Nam</span>; bầu BCHTW lâm thời — Bí thư: Trịnh Đình Cửu.</p></div>
+      </div>
+      <div class="banner" data-a="up">
+        <i data-lucide="star"></i>
+        <p>MỐC KỶ NIỆM <em>03.02.1930</em> — ĐẢNG CỘNG SẢN VIỆT NAM RA ĐỜI</p>
+      </div>
+      <p class="lbl mt-3 flex items-center gap-2" data-a="fade"><i data-lucide="info" style="width:12px;height:12px"></i> ĐÔNG DƯƠNG CS LIÊN ĐOÀN KHÔNG KỊP THAM DỰ — KẾT NẠP NGÀY 24/2/1930</p>
+    </div>
+  </section>
+
+  <!-- ======= 9 · CƯƠNG LĨNH ======= -->
+  <section class="slide" data-s="9">
+    <div class="s-idx">09</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="scroll-text"></i><span class="lbl red">CH.08 — VĂN KIỆN THÀNH LẬP ĐẢNG</span></div>
+        <span class="lbl">SLIDE 09 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">CƯƠNG LĨNH CHÍNH TRỊ <span class="rd">ĐẦU TIÊN</span>
+        <span class="sub">Chánh cương vắn tắt · Sách lược vắn tắt — do chính Nguyễn Ái Quốc soạn thảo</span></h2>
+    </header>
+    <div class="body grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+          <div class="panel" data-a="up"><span class="pno">01</span><p style="font-size:15px">Chánh cương vắn tắt</p></div>
+          <div class="panel" data-a="up"><span class="pno">02</span><p style="font-size:15px">Sách lược vắn tắt</p></div>
+          <div class="panel" data-a="up"><span class="pno">03</span><p style="font-size:15px">Chương trình tóm tắt</p></div>
+          <div class="panel" data-a="up"><span class="pno">04</span><p style="font-size:15px">Điều lệ vắn tắt</p></div>
+        </div>
+        <div class="lbl red mb-3" data-a="fade" style="font-size:11px">— NỘI DUNG CỐT LÕI</div>
+        <div class="kp" data-a="up"><span class="n">9.1</span><div><b>Chiến lược:</b> tư sản dân quyền cách mạng và thổ địa cách mạng để đi tới xã hội cộng sản.</div></div>
+        <div class="kp" data-a="up"><span class="n">9.2</span><div><b>Phương hướng:</b> đánh đổ đế quốc Pháp và phong kiến — <span style="color:var(--red);font-weight:600">ưu tiên giải phóng dân tộc</span>.</div></div>
+        <div class="kp" data-a="up"><span class="n">9.3</span><div><b>Lực lượng:</b> công-nông là <em>gốc</em>; liên minh tiểu tư sản, trí thức; lợi dụng/trung lập phú nông, địa chủ nhỏ, tư sản dân tộc.</div></div>
+        <div class="kp" data-a="up"><span class="n">9.4</span><div><b>Lãnh đạo &amp; quốc tế:</b> Đảng CSVN — đội tiên phong vô sản; liên minh vô sản bị áp bức toàn thế giới, đặc biệt vô sản Pháp.</div></div>
+      </div>
+      <div class="doc" data-a="up">
+        <h5>CHÁNH CƯƠNG VẮN TẮT</h5>
+        <div class="ds">CỦA ĐẢNG · 02/1930</div>
+        <p>“Đảng là đội tiên phong của vô sản giai cấp, phải thu phục cho được đại bộ phận giai cấp mình… Chủ trương làm tư sản dân quyền cách mạng và thổ địa cách mạng để đi tới xã hội cộng sản.”</p>
+        <div class="sgn">— NGUYỄN ÁI QUỐC SOẠN THẢO</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 10 · SÁNG TẠO ======= -->
+  <section class="slide" data-s="10">
+    <div class="s-idx">10</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="lightbulb"></i><span class="lbl red">CH.09 — ĐIỂM CỐT LÕI HỌC THUẬT</span></div>
+        <span class="lbl">SLIDE 10 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">SỰ <span class="rd">SÁNG TẠO ĐỘC ĐÁO</span><br>TRONG TƯ DUY NGUYỄN ÁI QUỐC</h2>
+    </header>
+    <div class="body">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+        <div class="panel" data-a="up"><span class="pno">10.1</span><h4><i data-lucide="unlink"></i> Không giáo điều</h4><p>Không sao chép máy móc mô hình “cách mạng vô sản thuần túy” như các khuynh hướng tả khuynh đương thời.</p></div>
+        <div class="panel" data-a="up"><span class="pno">10.2</span><h4><i data-lucide="flag"></i> Dân tộc là hàng đầu</h4><p>Đặt nhiệm vụ <span class="rd">giải phóng dân tộc</span> lên hàng đầu — phù hợp đặc điểm thuộc địa nửa phong kiến.</p></div>
+        <div class="panel" data-a="up"><span class="pno">10.3</span><h4><i data-lucide="scale"></i> Phân tích biện chứng</h4><p>Đoàn kết cả tư sản dân tộc có tinh thần yêu nước; không coi toàn bộ giai cấp tư sản là kẻ thù.</p></div>
+        <div class="panel" data-a="up"><span class="pno">10.4</span><h4><i data-lucide="infinity"></i> Sợi chỉ đỏ</h4><p>Kết hợp <b>độc lập dân tộc gắn liền với chủ nghĩa xã hội</b> — xuyên suốt sự nghiệp cách mạng.</p></div>
+      </div>
+      <div class="quote" data-a="up">
+        <p>Không có gì quý hơn độc lập, tự do.</p>
+        <div class="src">TINH THẦN CỐT LÕI TƯ TƯỞNG HỒ CHÍ MINH</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 11 · TỔNG HỢP ======= -->
+  <section class="slide" data-s="11">
+    <div class="s-idx">11</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="layers"></i><span class="lbl red">CH.10 — TỔNG KẾT</span></div>
+        <span class="lbl">SLIDE 11 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">ĐÁNH GIÁ <span class="rd">TỔNG HỢP VAI TRÒ</span>
+        <span class="sub">Ba trụ cột — Tư tưởng · Tổ chức · Chính trị</span></h2>
+    </header>
+    <div class="body">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+        <div class="panel" data-a="up" style="border-top:2px solid var(--red)"><span class="pno">TRỤ CỘT 01</span><h4 style="font-family:'Anton',sans-serif;font-size:20px"><i data-lucide="brain"></i> Tư tưởng</h4><p>Tìm ra con đường cách mạng đúng đắn; truyền bá chủ nghĩa Mác-Lênin về Việt Nam trong 9 năm (1921–1930).</p></div>
+        <div class="panel" data-a="up" style="border-top:2px solid var(--bone)"><span class="pno">TRỤ CỘT 02</span><h4 style="font-family:'Anton',sans-serif;font-size:20px"><i data-lucide="network"></i> Tổ chức</h4><p>Sáng lập Hội VNCM Thanh niên (1925); mở lớp huấn luyện; đào tạo cán bộ nòng cốt cho Đảng.</p></div>
+        <div class="panel" data-a="up" style="border-top:2px solid var(--red)"><span class="pno">TRỤ CỘT 03</span><h4 style="font-family:'Anton',sans-serif;font-size:20px"><i data-lucide="landmark"></i> Chính trị</h4><p>Chủ trì Hội nghị Hợp nhất (1–2/1930); soạn thảo Cương lĩnh chính trị đầu tiên của Đảng.</p></div>
+      </div>
+      <div class="banner" data-a="up">
+        <i data-lucide="star"></i>
+        <p>NGUYỄN ÁI QUỐC — NHÂN TỐ <em>QUYẾT ĐỊNH</em>, TRUNG TÂM, ẢNH HƯỞNG TOÀN DIỆN ĐẾN SỰ RA ĐỜI CỦA ĐẢNG</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 12 · Ý NGHĨA ======= -->
+  <section class="slide" data-s="12">
+    <div class="s-idx">12</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="trophy"></i><span class="lbl red">CH.11 — GIÁ TRỊ LỊCH SỬ</span></div>
+        <span class="lbl">SLIDE 12 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">Ý NGHĨA LỊCH SỬ <span class="rd">&amp; BÀI HỌC</span></h2>
+    </header>
+    <div class="body grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div data-a="up">
+        <div class="lbl red mb-3" style="font-size:11px">— ĐỐI VỚI VIỆT NAM</div>
+        <div class="kp"><span class="n">A1</span><div>Chấm dứt khủng hoảng kéo dài về đường lối và giai cấp lãnh đạo cách mạng.</div></div>
+        <div class="kp"><span class="n">A2</span><div>Bước ngoặt vĩ đại: cách mạng Việt Nam thành bộ phận của cách mạng vô sản thế giới.</div></div>
+        <div class="kp"><span class="n">A3</span><div>Cách mạng có sự lãnh đạo của một Đảng Mác-Lênin chân chính.</div></div>
+        <div class="fig mt-4" style="height:180px">
+          <img src="https://images.pexels.com/photos/37303430/pexels-photo-37303430.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Quảng trường Ba Đình" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">FIG.09</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>HÌNH 09</b> — BA ĐÌNH</span><span>TIẾP NỐI</span></div>
+        </div>
+      </div>
+      <div data-a="up">
+        <div class="lbl red mb-3" style="font-size:11px">— ĐỐI VỚI QUỐC TẾ</div>
+        <div class="kp"><span class="n">B1</span><div>Bài học vận dụng <em>sáng tạo</em> chủ nghĩa Mác-Lênin vào điều kiện thuộc địa — không giáo điều.</div></div>
+        <div class="kp"><span class="n">B2</span><div>Góp phần phát triển lý luận cách mạng giải phóng dân tộc trong thời đại đế quốc chủ nghĩa.</div></div>
+      </div>
+      <div data-a="up">
+        <div class="lbl red mb-3" style="font-size:11px">— BÀI HỌC HIỆN NAY</div>
+        <div class="kp"><span class="n">C1</span><div>Độc lập, tự chủ trong tư duy lý luận — không giáo điều, rập khuôn.</div></div>
+        <div class="kp"><span class="n">C2</span><div>Gắn lý luận với thực tiễn; lấy thực tiễn làm tiêu chuẩn chân lý.</div></div>
+        <div class="kp"><span class="n">C3</span><div>Đoàn kết, tranh thủ mọi lực lượng yêu nước — dân tộc trên hết, tổ quốc trên hết.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 13 · QUIZ ======= -->
+  <section class="slide" data-s="13">
+    <div class="s-idx">13</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="help-circle"></i><span class="lbl red">CH.12 — KIỂM TRA KIẾN THỨC</span></div>
+        <span class="lbl">SLIDE 13 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">5 CÂU HỎI <span class="rd">TRẮC NGHIỆM NÂNG CAO</span>
+        <span class="sub">Phân tích &amp; đánh giá — chọn bằng chuột hoặc phím A–D</span></h2>
+    </header>
+    <div class="body">
+      <div class="qdots" id="qdots"></div>
+      <div id="qtext" class="mb-4" style="font-size:19px;font-weight:600;line-height:1.4;min-height:54px"></div>
+      <div id="qopts"></div>
+      <div class="qfb" id="qfb"></div>
+      <div class="flex gap-3 mt-4 items-center">
+        <button class="qbtn pri" id="bCheck" disabled><i data-lucide="check"></i> KIỂM TRA</button>
+        <button class="qbtn" id="bNext" disabled><i data-lucide="arrow-right"></i> CÂU TIẾP</button>
+        <button class="qbtn" id="bRe" style="display:none"><i data-lucide="rotate-ccw"></i> LÀM LẠI</button>
+        <span class="lbl bone ml-auto flex items-center gap-2" style="font-size:11px"><i data-lucide="star" style="color:var(--red);width:13px;height:13px"></i> ĐIỂM: <b id="qscore" style="color:var(--red)">0/5</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 14 · TÀI LIỆU ======= -->
+  <section class="slide" data-s="14">
+    <div class="s-idx">14</div>
+    <header class="s-head">
+      <div class="s-head-row">
+        <div class="l"><i data-lucide="library"></i><span class="lbl red">CH.13 — TRÍCH DẪN HỌC THUẬT</span></div>
+        <span class="lbl">SLIDE 14 / 14</span>
+      </div>
+      <h2 class="s-title" data-a="up">TÀI LIỆU <span class="rd">THAM KHẢO</span></h2>
+    </header>
+    <div class="body grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <div class="ref" data-a="up"><span class="rn">[1]</span><div>Hồ Chí Minh Toàn tập, tập 2, Nxb Chính trị quốc gia Sự thật, Hà Nội.</div></div>
+        <div class="ref" data-a="up"><span class="rn">[2]</span><div>Đảng Cộng sản Việt Nam — Văn kiện Đảng Toàn tập, tập 1, Nxb Chính trị quốc gia, Hà Nội, 2005.</div></div>
+        <div class="ref" data-a="up"><span class="rn">[3]</span><div>PGS.TS Phạm Xanh, <em>Nguyễn Ái Quốc với việc truyền bá chủ nghĩa Mác – Lênin ở Việt Nam (1921–1930)</em>, Nxb ĐHQG Hà Nội.</div></div>
+        <div class="ref" data-a="up"><span class="rn">[4]</span><div>Bảo tàng Lịch sử quốc gia — tư liệu về Hội nghị thành lập Đảng.</div></div>
+        <div class="ref" data-a="up"><span class="rn">[5]</span><div>Tư liệu văn kiện Đảng — dangcongsan.vn, Cổng thông tin điện tử Đảng Cộng sản Việt Nam.</div></div>
+        <div class="ref" data-a="up"><span class="rn">[6]</span><div>Học viện Chính trị khu vực IV, <em>Lớp huấn luyện chính trị: Sự sáng tạo của Nguyễn Ái Quốc</em>.</div></div>
+      </div>
+      <div class="flex flex-col gap-5">
+        <div class="fig tint" style="height:260px" data-a="up">
+          <img src="https://images.pexels.com/photos/35747148/pexels-photo-35747148.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Tượng Chủ tịch Hồ Chí Minh" onerror="this.classList.add('err')" onload="this.classList.add('ok')">
+          <div class="fb">FIG.10</div><div class="zi"><i data-lucide="zoom-in"></i></div>
+          <div class="cap"><span><b>HÌNH 10</b> — CHỦ TỊCH HỒ CHÍ MINH</span><span>NGƯỜI SÁNG LẬP</span></div>
+        </div>
+        <div data-a="fade">
+          <p class="serif" style="font-size:17px;color:var(--bone)">“Không có gì quý hơn độc lập, tự do”</p>
+          <p class="lbl mt-3">XIN CHÂN THÀNH CẢM ƠN QUÝ THẦY CÔ VÀ CÁC BẠN</p>
+          <p class="lbl mt-1" style="color:var(--red)">1930 — 2025 · KỶ NIỆM 95 NĂM THÀNH LẬP ĐẢNG</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="hud">
+  <div class="hud-left"><b id="cnum">01</b><span class="sep">/</span>14 <span style="margin-left:14px" id="ctitle">TRANG BÌA</span></div>
+  <div class="hud-mid"><span><kbd>←</kbd><kbd>→</kbd> CHUYỂN</span><span><kbd>T</kbd> MỤC LỤC</span><span><kbd>F</kbd> FULLSCREEN</span><span><kbd>A–D</kbd> TRẢ LỜI</span></div>
+  <div class="hud-right">
+    <button class="nbtn" id="pBtn" title="Slide trước"><i data-lucide="arrow-left"></i></button>
+    <button class="nbtn" id="nBtn" title="Slide sau"><i data-lucide="arrow-right"></i></button>
+  </div>
+</div>
+<div class="dots" id="dots"></div>
+
+<div class="ovl" id="tocOvl">
+  <div class="toc">
+    <h2><i data-lucide="list"></i> MỤC LỤC</h2>
+    <div id="tocList"></div>
+    <p class="lbl mt-5 text-center">ESC HOẶC CLICK RA NGOÀI ĐỂ ĐÓNG</p>
+  </div>
+</div>
+
+<div class="lb" id="lb">
+  <button class="x" id="lbX"><i data-lucide="x"></i></button>
+  <img id="lbImg" src="" alt="">
+  <div class="c" id="lbCap"></div>
+</div>
+
+<script>
+const T=['TRANG BÌA','BỐI CẢNH LỊCH SỬ','HÀNH TRÌNH TÌM ĐƯỜNG','BA CHẶNG TRUYỀN BÁ','HỘI VNCM THANH NIÊN','LỚP HUẤN LUYỆN QUẢNG CHÂU','BA TỔ CHỨC CỘNG SẢN','HỘI NGHỊ HỢP NHẤT','CƯƠNG LĨNH ĐẦU TIÊN','SỰ SÁNG TẠO ĐỘC ĐÁO','TỔNG HỢP VAI TRÒ','Ý NGHĨA & BÀI HỌC','TRẮC NGHIỆM NÂNG CAO','TÀI LIỆU THAM KHẢO'];
+const slides=[...document.querySelectorAll('.slide')],N=slides.length;
+let cur=0,busy=false,quizOn=false;
+const pad=n=>n<10?'0'+n:''+n;
+const icons=()=>window.lucide&&lucide.createIcons();
+const progress=document.getElementById('progress'),cnum=document.getElementById('cnum'),ctitle=document.getElementById('ctitle');
+
+/* dust */
+(function(){const c=document.getElementById('dust'),x=c.getContext('2d');let W,H,P=[];
+const sz=()=>{W=c.width=innerWidth;H=c.height=innerHeight};sz();addEventListener('resize',sz);
+for(let i=0;i<60;i++)P.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.1+.3,s:Math.random()*.22+.05,p:Math.random()*6.28,a:Math.random()*.25+.06});
+(function loop(){if(!document.hidden){x.clearRect(0,0,W,H);for(const q of P){q.y-=q.s;q.p+=.01;q.x+=Math.sin(q.p)*.2;if(q.y<-6){q.y=H+6;q.x=Math.random()*W}x.globalAlpha=q.a*(0.6+0.4*Math.sin(q.p*2));x.fillStyle='#e9e4d8';x.beginPath();x.arc(q.x,q.y,q.r,0,6.283);x.fill()}x.globalAlpha=1}requestAnimationFrame(loop)})()})();
+
+/* dots + toc */
+const dotsBox=document.getElementById('dots'),tocList=document.getElementById('tocList');
+T.forEach((t,i)=>{
+  const d=document.createElement('div');d.className='dot'+(i===0?' on':'');d.dataset.t=pad(i+1)+' · '+t;
+  d.onclick=()=>go(i);dotsBox.appendChild(d);
+  const it=document.createElement('div');it.className='titem';
+  it.innerHTML='<span class="n">'+pad(i+1)+'</span><span class="t">'+t+'</span><i data-lucide="corner-down-right"></i>';
+  it.onclick=()=>{go(i);toc.classList.remove('show')};tocList.appendChild(it);
+});
+
+/* scramble */
+const CH='█▓▒░/\\|<>*0123456789';
+function scr(el){const f=el.dataset.f||(el.dataset.f=el.textContent);let fr=0;const D=18;
+  const id=setInterval(()=>{fr++;let o='';for(let i=0;i<f.length;i++){o+= i < fr/D*f.length*1.5 ? f[i] : (f[i]===' '?' ':CH[Math.random()*CH.length|0])}el.textContent=o;if(fr>=D){clearInterval(id);el.textContent=f}},30);}
+function cnt(el){const t=+el.dataset.count;gsap.fromTo(el,{innerText:0},{innerText:t,duration:1.4,ease:'power2.out',snap:{innerText:1}})}
+
+function anim(s,dir=1){
+  const tl=gsap.timeline();
+  tl.fromTo(s,{opacity:0,y:dir*26},{opacity:1,y:0,duration:.5,ease:'power3.out'},0);
+  s.querySelectorAll('[data-a]').forEach((el,i)=>{
+    const t=el.dataset.a;let f={opacity:0,y:24};
+    if(t==='fade')f={opacity:0};
+    if(t==='line')f={opacity:0,y:'108%'};
+    tl.fromTo(el,f,{opacity:1,y:0,duration:.5,ease:'power3.out'},.12+i*.06);
+  });
+  const ln=s.querySelector('.tl .ln');
+  if(ln){gsap.fromTo(ln,{strokeDashoffset:860},{strokeDashoffset:0,duration:1.2,ease:'power2.inOut',delay:.25});
+    gsap.fromTo(s.querySelectorAll('.tl .nd'),{scale:0,transformOrigin:'center'},{scale:1,duration:.45,stagger:.3,delay:.45,ease:'back.out(3)'});}
+  s.querySelectorAll('.s-head-row .lbl.red').forEach(scr);
+  s.querySelectorAll('[data-count]').forEach(cnt);
+  return tl;
+}
+function go(i){
+  if(busy||i<0||i>=N||i===cur)return;busy=true;
+  const p=slides[cur],n=slides[i];
+  gsap.timeline({onComplete(){p.classList.remove('active');n.classList.add('active');gsap.set(p,{clearProps:'all'});
+    anim(n).eventCallback('onComplete',()=>busy=false);}})
+    .to(p,{opacity:0,y:-18,duration:.3,ease:'power2.in'});
+  cur=i;progress.style.width=((cur+1)/N*100)+'%';
+  cnum.textContent=pad(cur+1);ctitle.textContent='— '+T[cur];
+  document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k===cur));
+  const b=n.querySelector('.body');if(b)b.scrollTop=0;
+  if(cur===12&&!quizOn){quizOn=true;renderQ();}
+}
+document.getElementById('pBtn').onclick=()=>go(cur-1);
+document.getElementById('nBtn').onclick=()=>go(cur+1);
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1)}
+  if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1)}
+  if(e.key==='t'||e.key==='T')toc.classList.toggle('show');
+  if(e.key==='f'||e.key==='F')fs();
+  if(e.key==='Escape'){toc.classList.remove('show');lb.classList.remove('show')}
+  if(cur===12&&quizOn)qkey(e);
+});
+let tx=0;addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)d>0?go(cur+1):go(cur-1)});
+
+const toc=document.getElementById('tocOvl');
+document.getElementById('tocBtn').onclick=()=>toc.classList.toggle('show');
+toc.onclick=e=>{if(e.target===toc)toc.classList.remove('show')};
+function fs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+document.getElementById('fsBtn').onclick=fs;
+
+/* lightbox */
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbCap=document.getElementById('lbCap');
+document.addEventListener('click',e=>{
+  const f=e.target.closest('.fig');if(!f)return;
+  const im=f.querySelector('img');if(!im||im.classList.contains('err'))return;
+  const c=f.querySelector('.cap');
+  lbImg.src=im.src;lbCap.textContent=c?c.textContent.replace(/\s+/g,' ').trim():'';
+  lb.classList.add('show');
+});
+document.getElementById('lbX').onclick=()=>lb.classList.remove('show');
+lb.onclick=e=>{if(e.target===lb)lb.classList.remove('show')};
+
+/* quiz */
+const QS=[
+ {q:"Nội dung nào sau đây KHÔNG PHẢI là điểm sáng tạo của Nguyễn Ái Quốc trong Chánh cương vắn tắt, Sách lược vắn tắt (2/1930)?",
+  o:["Đặt nhiệm vụ giải phóng dân tộc lên hàng đầu","Xác định công nông là gốc của cách mạng","Coi toàn bộ giai cấp tư sản là kẻ thù cần đánh đổ triệt để","Lợi dụng hoặc trung lập phú nông, trung tiểu địa chủ, tư sản dân tộc"],c:2,
+  e:"Phương án C là tư duy giáo điều tả khuynh. Nguyễn Ái Quốc phân tích cụ thể từng bộ phận giai cấp tư sản: chỉ đánh đổ tư sản mại bản (tay sai đế quốc), còn tư sản dân tộc có thể tranh thủ hoặc trung lập — biểu hiện của phương pháp biện chứng, không rập khuôn."},
+ {q:"Ba chặng truyền bá chủ nghĩa Mác-Lênin về Việt Nam (1921–1930) theo đúng trình tự địa bàn là:",
+  o:["Quảng Châu — Paris — Moskva","Paris — Quảng Châu — Moskva","Paris — Moskva — Quảng Châu","Moskva — Paris — Quảng Châu"],c:2,
+  e:"Chặng 1 (1921-23) Paris — báo Le Paria; chặng 2 (1923-24) Moskva — nghiên cứu lý luận, Quốc tế Nông dân; chặng 3 (1924-27) Quảng Châu — lớp huấn luyện, Hội VNCM Thanh niên. Người ghé Moskva chuẩn bị lý luận bài bản trước khi đến Quảng Châu."},
+ {q:"Ba tổ chức cộng sản ra đời năm 1929 theo đúng thứ tự thời gian là:",
+  o:["An Nam CSĐ → Đông Dương CSĐ → Đông Dương CS Liên đoàn","Đông Dương CSĐ → An Nam CSĐ → Đông Dương CS Liên đoàn","Đông Dương CS Liên đoàn → Đông Dương CSĐ → An Nam CSĐ","Đông Dương CSĐ → Đông Dương CS Liên đoàn → An Nam CSĐ"],c:1,
+  e:"Đông Dương Cộng sản Đảng (17/6/1929) → An Nam Cộng sản Đảng (8/1929) → Đông Dương Cộng sản Liên đoàn (9/1929, từ Tân Việt Cách mạng Đảng). Hai tổ chức đầu tách từ Hội VNCM Thanh niên; tổ chức thứ ba phát triển độc lập từ Tân Việt."},
+ {q:"Ai được bầu làm Bí thư lâm thời BCHTW Đảng Cộng sản Việt Nam ngay sau Hội nghị Hợp nhất (2/1930)?",
+  o:["Nguyễn Ái Quốc","Trịnh Đình Cửu","Nguyễn Đức Cảnh","Châu Văn Liêm"],c:1,
+  e:"Trịnh Đình Cửu (đại biểu Đông Dương Cộng sản Đảng) làm Bí thư lâm thời của BCHTW lâm thời 7 ủy viên. Nguyễn Ái Quốc chủ trì với tư cách phái viên Quốc tế Cộng sản nhưng không giữ chức vụ trong bộ máy Đảng — thể hiện tinh thần quốc tế vô sản và sự tôn trọng tự chủ của tổ chức trong nước."},
+ {q:"Vì sao khẳng định Nguyễn Ái Quốc là nhân tố QUYẾT ĐỊNH (không phải duy nhất) trong sự ra đời của Đảng CSVN năm 1930?",
+  o:["Vì Người là người Việt Nam duy nhất am hiểu chủ nghĩa Mác-Lênin khi đó","Vì Người chuẩn bị toàn diện tư tưởng, tổ chức, chính trị và có uy tín hợp nhất các lực lượng đang chia rẽ","Vì Quốc tế Cộng sản trực tiếp chỉ định Người thành lập Đảng","Vì các tổ chức cộng sản trong nước đều không đủ năng lực tự hợp nhất"],c:1,
+  e:"B tổng hợp đủ ba trụ cột và nhấn mạnh vai trò trung gian dung hòa. A sai: không phải duy nhất (còn Hồ Tùng Mậu, Lê Hồng Sơn…). C sai: Quốc tế Cộng sản không “chỉ định” máy móc. D sai: cán bộ trong nước có năng lực nhưng thiếu người trung gian đủ uy tín. Vai trò của NAQ là quyết định nhưng không thay thế lực lượng trong nước."}
+];
+let qi=0,sel=-1,ans=false,sc=0;const RES=[null,null,null,null,null];
+const qtext=document.getElementById('qtext'),qopts=document.getElementById('qopts'),qfb=document.getElementById('qfb'),
+bCheck=document.getElementById('bCheck'),bNext=document.getElementById('bNext'),bRe=document.getElementById('bRe'),
+qd=document.getElementById('qdots'),qscore=document.getElementById('qscore');
+for(let i=0;i<5;i++){const d=document.createElement('div');d.className='qd';qd.appendChild(d)}
+function updDots(){document.querySelectorAll('.qd').forEach((d,i)=>{d.className='qd';if(RES[i]===true)d.classList.add('ok');else if(RES[i]===false)d.classList.add('bad');if(i===qi)d.classList.add('cur')})}
+function renderQ(){
+  const q=QS[qi];qtext.textContent='CÂU '+(qi+1)+' — '+q.q;
+  qopts.innerHTML='';qfb.classList.remove('show');qfb.innerHTML='';
+  sel=-1;ans=false;bCheck.disabled=true;bNext.disabled=true;
+  bNext.innerHTML='<i data-lucide="arrow-right"></i> CÂU TIẾP';
+  bRe.style.display='none';qscore.textContent=sc+'/5';updDots();icons();
+  gsap.fromTo(qtext,{opacity:0,y:12},{opacity:1,y:0,duration:.4});
+  q.o.forEach((o,i)=>{
+    const d=document.createElement('div');d.className='qopt';
+    d.innerHTML='<span class="L">'+String.fromCharCode(65+i)+'</span><span>'+o+'</span><span class="k">'+String.fromCharCode(65+i)+'</span>';
+    d.onclick=()=>pick(i);qopts.appendChild(d);
+    gsap.fromTo(d,{opacity:0,x:-12},{opacity:1,x:0,duration:.3,delay:i*.06});
+  });
+}
+function pick(i){if(ans)return;document.querySelectorAll('.qopt').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.qopt')[i].classList.add('sel');sel=i;bCheck.disabled=false}
+function qkey(e){const m={A:0,B:1,C:2,D:3,'1':0,'2':1,'3':2,'4':3}[e.key.toUpperCase()];
+  if(!ans&&m!==undefined&&document.querySelectorAll('.qopt').length){pick(m);return}
+  if(e.key==='Enter'){if(!bCheck.disabled)bCheck.click();else if(!bNext.disabled&&bNext.style.display!=='none')bNext.click()}}
+bCheck.onclick=()=>{
+  if(sel<0||ans)return;ans=true;const q=QS[qi],ok=sel===q.c;RES[qi]=ok;if(ok)sc++;
+  document.querySelectorAll('.qopt').forEach((o,i)=>{o.style.pointerEvents='none';
+    if(i===q.c)o.classList.add('good');else if(i===sel)o.classList.add('bad')});
+  qfb.innerHTML='<div class="hd" style="color:'+(ok?'#5fbf7a':'var(--red)')+'"><i data-lucide="'+(ok?'badge-check':'circle-x')+'"></i> ĐÁP ÁN: '+String.fromCharCode(65+q.c)+' — '+(ok?'CHÍNH XÁC':'CHƯA ĐÚNG')+'</div>'+q.e;
+  qfb.classList.add('show');bCheck.disabled=true;bNext.disabled=false;
+  qscore.textContent=sc+'/5';updDots();icons();
+};
+bNext.onclick=()=>{
+  if(qi<4){qi++;renderQ();return}
+  const C=2*Math.PI*44;
+  qopts.innerHTML='';
+  qtext.innerHTML='<div class="flex items-center gap-6"><span class="ring"><svg viewBox="0 0 100 100"><circle class="rb" cx="50" cy="50" r="44"></circle><circle class="rv" id="rv" cx="50" cy="50" r="44" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'"></circle></svg></span><span><span class="disp" style="font-size:30px;color:var(--bone)">HOÀN THÀNH — '+sc+'/5</span><br><span style="font-size:16px;color:var(--dim)">Vai trò quyết định của Nguyễn Ái Quốc đối với sự ra đời của Đảng Cộng sản Việt Nam (03.02.1930).</span></span></div>';
+  qfb.classList.remove('show');bCheck.style.display='none';bNext.style.display='none';bRe.style.display='inline-flex';
+  document.querySelectorAll('.qd').forEach(d=>d.classList.remove('cur'));
+  gsap.fromTo(qtext,{opacity:0,scale:.97},{opacity:1,scale:1,duration:.5,ease:'back.out'});
+  gsap.to('#rv',{strokeDashoffset:C*(1-sc/5),duration:1.3,ease:'power3.out',delay:.3});
+};
+bRe.onclick=()=>{qi=0;sc=0;RES.fill(null);bCheck.style.display='inline-flex';bNext.style.display='inline-flex';renderQ()};
+
+/* boot */
+progress.style.width=(1/N*100)+'%';ctitle.textContent='— '+T[0];icons();
+addEventListener('load',()=>{
+  gsap.to('#ibar',{width:'100%',duration:.8,ease:'power2.inOut'});
+  gsap.from('.intro .st',{scale:0,rotate:-120,duration:.7,ease:'back.out(2)'});
+  gsap.to('#intro',{opacity:0,duration:.5,delay:.95,ease:'power2.in',onComplete:()=>document.getElementById('intro').remove()});
+  anim(slides[0]);
+});
+</script>
+</body>
+</html>
